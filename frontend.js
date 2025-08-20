@@ -86,7 +86,6 @@
                 iframe.style.borderRadius = '8px';
                 preview.appendChild(iframe);
                 
-                const theme = themeSelector.value;
 
                 const fullHtml = `
                     <!DOCTYPE html>
