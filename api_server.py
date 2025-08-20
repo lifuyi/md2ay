@@ -6,24 +6,7 @@ import os
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
 
-HTML_TEMPLATE = """
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rendered Markdown</title>
-    <style>
-        {custom_css}
-    </style>
-</head>
-<body>
-    <div class="markdown-body">
-        {html_content}
-    </div>
-</body>
-</html>
-"""
+
 
 @app.route('/')
 def index():
@@ -43,6 +26,11 @@ def get_styles():
     return jsonify(styles)
 
 
+@app.route('/styles/<path:path>')
+def send_styles(path):
+    return send_from_directory('.', path)
+
+
 @app.route('/render', methods=['POST'])
 def render_markdown():
     data = request.get_json()
@@ -50,12 +38,27 @@ def render_markdown():
     style_name = data.get('style', 'default')
 
     # Convert Markdown to HTML
-    html_content = markdown.markdown(md_content, extensions=[
-        'fenced_code',
-        'tables',
-        'nl2br',
-        'pymdownx.superfences'
-    ])
+    html_content = markdown.markdown(
+        md_content,
+        extensions=[
+            'fenced_code',
+            'tables',
+            'nl2br',
+            'pymdownx.superfences',
+            'pymdownx.magiclink'
+        ],
+        extension_configs={
+            'pymdownx.superfences': {
+                'custom_fences': [
+                    {
+                        'name': 'mermaid',
+                        'class': 'mermaid',
+                        'format': lambda source, language, css_class, options, md, **kwargs: f'<div class="{css_class}">{source}</div>'
+                    }
+                ]
+            }
+        }
+    )
 
     # Load the selected stylesheet
     custom_css = ''
@@ -68,10 +71,7 @@ def render_markdown():
         # Handle case where style file doesn't exist
         pass
 
-    # Combine with HTML template
-    final_html = HTML_TEMPLATE.format(custom_css=custom_css, html_content=html_content)
-
-    return final_html, 200, {'Content-Type': 'text/html'}
+    return html_content, 200, {'Content-Type': 'text/html'}
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5002, debug=True)

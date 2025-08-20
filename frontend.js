@@ -76,16 +76,14 @@
 
                 const html = await response.text();
                 
-                // 创建iframe来显示HTML内容
-                preview.innerHTML = '';
                 const iframe = document.createElement('iframe');
                 iframe.style.width = '100%';
                 iframe.style.minHeight = '400px';
                 iframe.style.border = 'none';
                 iframe.style.background = 'white';
                 iframe.style.borderRadius = '8px';
+                preview.innerHTML = '';
                 preview.appendChild(iframe);
-                
 
                 const fullHtml = `
                     <!DOCTYPE html>
@@ -96,9 +94,10 @@
                         <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"><\/script>
                     </head>
                     <body>
-                        ${html}
+                        <div class="markdown-body">${html}</div>
                         <script>
                             mermaid.initialize({ startOnLoad: true });
+                            mermaid.run();
                         <\/script>
                     </body>
                     </html>
@@ -106,8 +105,7 @@
 
                 iframe.srcdoc = fullHtml;
 
-                // 调整iframe高度以适应内容
-                setTimeout(() => {
+                iframe.onload = () => {
                     try {
                         const body = iframe.contentDocument.body;
                         const height = Math.max(body.scrollHeight, body.offsetHeight, 400) + 20;
@@ -116,7 +114,7 @@
                         console.log('高度调整失败:', e);
                         iframe.style.height = '600px';
                     }
-                }, 200);
+                };
                 
                 updateStatus('渲染完成');
             } catch (error) {
@@ -301,10 +299,9 @@ $x = {-b \pm \sqrt{b^2-4ac} \over 2a}$
         // 下载PNG
         function downloadPNG() {
             const previewPane = document.getElementById('preview');
-            const iframe = previewPane.querySelector('iframe');
             const theme = themeSelector.value;
 
-            if (!iframe) {
+            if (!previewPane.innerHTML) {
                 alert('请先渲染内容');
                 return;
             }
@@ -312,8 +309,8 @@ $x = {-b \pm \sqrt{b^2-4ac} \over 2a}$
             showLoading();
             updateStatus('正在生成PNG...');
 
-            // Use html2canvas on the iframe's content
-            html2canvas(iframe.contentDocument.body, {
+            // Use html2canvas on the preview pane
+            html2canvas(previewPane, {
                 useCORS: true, // To handle cross-origin images if any
             }).then(canvas => {
                 const a = document.createElement('a');
