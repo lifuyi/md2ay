@@ -86,9 +86,27 @@
                 iframe.style.borderRadius = '8px';
                 preview.appendChild(iframe);
                 
-                // 写入HTML内容并确保样式正确加载
-                iframe.contentDocument.body.innerHTML = html;
-                
+                const theme = themeSelector.value;
+
+                const fullHtml = `
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <link rel="stylesheet" href="http://localhost:5002/styles/${theme}">
+                        <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"><\/script>
+                        <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"><\/script>
+                    </head>
+                    <body>
+                        ${html}
+                        <script>
+                            mermaid.initialize({ startOnLoad: true });
+                        <\/script>
+                    </body>
+                    </html>
+                `;
+
+                iframe.srcdoc = fullHtml;
+
                 // 调整iframe高度以适应内容
                 setTimeout(() => {
                     try {
@@ -226,6 +244,11 @@ https://www.example.com
 
 ### Emoji支持
 🎉 🚀 💡 📊 ✨
+
+### 数学公式测试
+
+当 $a \ne 0$ 时, 方程 $ax^2 + bx + c = 0$ 的解是
+$x = {-b \pm \sqrt{b^2-4ac} \over 2a}$
 
 ### 特殊符号
 © ® ™ → ← ↑ ↓ ↔ ↕
