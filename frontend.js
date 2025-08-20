@@ -98,6 +98,9 @@
                         <script>
                             mermaid.initialize({ startOnLoad: true });
                             mermaid.run();
+                            if (iframe.contentWindow.MathJax) {
+                                iframe.contentWindow.MathJax.typesetPromise();
+                            }
                         <\/script>
                     </body>
                     </html>
