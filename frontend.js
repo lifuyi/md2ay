@@ -40,6 +40,23 @@
             charCount.textContent = `${count} 字符`;
         }
 
+        // 分割Markdown文本为卡片
+        function splitMarkdownIntoCards(markdown) {
+            // 如果复选框未选中，则不进行分割
+            const splitCheckbox = document.getElementById('split-checkbox');
+            if (!splitCheckbox || !splitCheckbox.checked) {
+                return [markdown];
+            }
+
+            // 使用正则表达式分割文本，保留分隔符
+            const sections = markdown.split(/^---$/gm);
+            
+            // 过滤掉空的部分，并去除每部分的前后空白
+            return sections
+                .map(section => section.trim())
+                .filter(section => section.length > 0);
+        }
+
         // 渲染Markdown
         async function renderMarkdown() {
             const markdown = editor.value.trim();
@@ -59,65 +76,85 @@
             updateStatus('渲染中...');
 
             try {
-                const response = await fetch(`${API_BASE_URL}/render`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        md: markdown,
-                        style: theme
-                    })
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
-
-                const html = await response.text();
+                // 分割Markdown文本为卡片
+                const sections = splitMarkdownIntoCards(markdown);
                 
-                const iframe = document.createElement('iframe');
-                iframe.style.width = '100%';
-                iframe.style.minHeight = '400px';
-                iframe.style.border = 'none';
-                iframe.style.background = 'white';
-                iframe.style.borderRadius = '8px';
+                // 清空预览区域
                 preview.innerHTML = '';
-                preview.appendChild(iframe);
+                
+                // 为每个部分创建卡片并渲染
+                for (let i = 0; i < sections.length; i++) {
+                    const sectionMarkdown = sections[i];
+                    
+                    // 创建卡片容器
+                    const card = document.createElement('div');
+                    card.className = 'section-card';
+                    
+                    // 创建iframe用于渲染该部分
+                    const iframe = document.createElement('iframe');
+                    iframe.style.width = '100%';
+                    iframe.style.border = 'none';
+                    iframe.style.background = 'white';
+                    iframe.style.borderRadius = '4px';
+                    
+                    // 添加到卡片中
+                    card.appendChild(iframe);
+                    
+                    // 添加到预览区域
+                    preview.appendChild(card);
+                    
+                    // 发送请求渲染该部分
+                    const response = await fetch(`${API_BASE_URL}/render`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            md: sectionMarkdown,
+                            style: theme
+                        })
+                    });
 
-                const fullHtml = `
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <link rel="stylesheet" href="http://localhost:5002/styles/${theme}">
-                        <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"><\/script>
-                        <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"><\/script>
-                    </head>
-                    <body>
-                        <div class="markdown-body">${html}</div>
-                        <script>
-                            mermaid.initialize({ startOnLoad: true });
-                            mermaid.run();
-                            if (iframe.contentWindow.MathJax) {
-                                iframe.contentWindow.MathJax.typesetPromise();
-                            }
-                        <\/script>
-                    </body>
-                    </html>
-                `;
-
-                iframe.srcdoc = fullHtml;
-
-                iframe.onload = () => {
-                    try {
-                        const body = iframe.contentDocument.body;
-                        const height = Math.max(body.scrollHeight, body.offsetHeight, 400) + 20;
-                        iframe.style.height = height + 'px';
-                    } catch (e) {
-                        console.log('高度调整失败:', e);
-                        iframe.style.height = '600px';
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                     }
-                };
+
+                    const html = await response.text();
+                    
+                    const fullHtml = `
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <link rel="stylesheet" href="http://localhost:5002/styles/${theme}">
+                            <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"><\/script>
+                            <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"><\/script>
+                        </head>
+                        <body>
+                            <div class="markdown-body">${html}</div>
+                            <script>
+                                mermaid.initialize({ startOnLoad: true });
+                                mermaid.run();
+                                if (window.MathJax) {
+                                    window.MathJax.typesetPromise();
+                                }
+                            <\/script>
+                        </body>
+                        </html>
+                    `;
+
+                    iframe.srcdoc = fullHtml;
+
+                    iframe.onload = () => {
+                        try {
+                            const body = iframe.contentDocument.body;
+                            const height = Math.max(body.scrollHeight, body.offsetHeight, 200) + 20;
+                            iframe.style.height = height + 'px';
+                        } catch (e) {
+                            console.log('高度调整失败:', e);
+                            iframe.style.height = '300px';
+                        }
+                    };
+                }
                 
                 updateStatus('渲染完成');
             } catch (error) {
@@ -339,6 +376,9 @@ $x = {-b \pm \sqrt{b^2-4ac} \over 2a}$
         }, 500));
 
         themeSelector.addEventListener('change', renderMarkdown);
+        
+        // 为分隔线拆分复选框添加事件监听器
+        document.getElementById('split-checkbox').addEventListener('change', renderMarkdown);
 
         // 初始化
         document.addEventListener('DOMContentLoaded', () => {
