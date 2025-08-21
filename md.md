@@ -130,12 +130,14 @@ $$
   $$
   \chi^2 = \sum \frac{(O - E)^2}{E}
   $$
-    
+
 2. 列表内块公式 2
 
   $$
   \chi^2 = \sum \frac{(|O - E| - 0.5)^2}{E}
   $$
+
+  $$x=\frac{-b\pm\sqrt{b^2-4ac}}{2a}$$
 
 
 
@@ -150,7 +152,7 @@ graph LR
   A[GraphCommand] --> B[update]
   A --> C[goto]
   A --> D[send]
-  
+
   B --> B1[更新状态]
   C --> C1[流程控制]
   D --> D1[消息传递]
