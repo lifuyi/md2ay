@@ -4,7 +4,7 @@ body {
   background-color: #f9f9f9;
 }
 
-.section {
+.markdown-body {
   margin: 0 auto;
   max-width: 677px;
   background-color: #ffffff;
@@ -13,7 +13,7 @@ body {
 }
 
 /* Main container */
-.main-container {
+.section-card {
   max-width: 677px;
   margin: 0 auto;
   padding: 16px;

@@ -82,26 +82,20 @@
                 // 清空预览区域
                 preview.innerHTML = '';
                 
-                // 为每个部分创建卡片并渲染
+                // 创建单个iframe用于渲染所有部分
+                const iframe = document.createElement('iframe');
+                iframe.style.width = '100%';
+                iframe.style.border = 'none';
+                iframe.style.background = 'white';
+                iframe.style.borderRadius = '4px';
+                
+                // 添加到预览区域
+                preview.appendChild(iframe);
+                
+                // 为每个部分创建HTML内容
+                let combinedHtml = '';
                 for (let i = 0; i < sections.length; i++) {
                     const sectionMarkdown = sections[i];
-                    
-                    // 创建卡片容器
-                    const card = document.createElement('div');
-                    card.className = 'section-card';
-                    
-                    // 创建iframe用于渲染该部分
-                    const iframe = document.createElement('iframe');
-                    iframe.style.width = '100%';
-                    iframe.style.border = 'none';
-                    iframe.style.background = 'white';
-                    iframe.style.borderRadius = '4px';
-                    
-                    // 添加到卡片中
-                    card.appendChild(iframe);
-                    
-                    // 添加到预览区域
-                    preview.appendChild(card);
                     
                     // 发送请求渲染该部分
                     const response = await fetch(`${API_BASE_URL}/render`, {
@@ -121,39 +115,56 @@
 
                     const html = await response.text();
                     
-                    const fullHtml = `
-                        <!DOCTYPE html>
-                        <html>
-                        <head>
-                            <link rel="stylesheet" href="http://localhost:5002/styles/${theme}">
-                            <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"><\/script>
-                            <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"><\/script>
-                        </head>
-                        <body>
-                            <div class="markdown-body">${html}</div>
-                            <script>
-                                mermaid.initialize({ startOnLoad: true });
-                                mermaid.run();
-                                if (window.MathJax) {
-                                    window.MathJax.typesetPromise();
-                                }
-                            <\/script>
-                        </body>
-                        </html>
-                    `;
+                    // 为每个部分添加分隔线和section-card样式
+                    combinedHtml += `<div class="section-card">${html}</div>`;
+                    
+                    // 如果不是最后一部分，添加分隔线
+                    if (i < sections.length - 1) {
+                        combinedHtml += '<hr style="margin: 20px 0; border: 1px solid #eee;">';
+                    }
+                }
+                
+                const fullHtml = `
+                    <!DOCTYPE html>
+                    <section>
+                    <head>
+                        <link rel="stylesheet" href="http://localhost:5002/styles/${theme}">
+                        <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"><\/script>
+                        <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"><\/script>
+                        <style>
+                            .section-card {
+                                border: 1px solid #eee;
+                                border-radius: 8px;
+                                padding: 15px;
+                                margin-bottom: 20px;
+                                background: #fafafa;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="markdown-body">${combinedHtml}</div>
+                        <script>
+                            mermaid.initialize({ startOnLoad: true });
+                            mermaid.run();
+                            if (window.MathJax) {
+                                window.MathJax.typesetPromise();
+                            }
+                        <\/script>
+                    </body>
+                    </section>
+                `;
 
-                    iframe.srcdoc = fullHtml;
+                iframe.srcdoc = fullHtml;
 
-                    iframe.onload = () => {
-                        try {
-                            const body = iframe.contentDocument.body;
-                            const height = Math.max(body.scrollHeight, body.offsetHeight, 200) + 20;
-                            iframe.style.height = height + 'px';
-                        } catch (e) {
-                            console.log('高度调整失败:', e);
-                            iframe.style.height = '300px';
-                        }
-                    };
+                iframe.onload = () => {
+                    try {
+                        const body = iframe.contentDocument.body;
+                        const height = Math.max(body.scrollHeight, body.offsetHeight, 200) + 20;
+                        iframe.style.height = height + 'px';
+                    } catch (e) {
+                        console.log('高度调整失败:', e);
+                        iframe.style.height = '300px';
+                    }
                 }
                 
                 updateStatus('渲染完成');
