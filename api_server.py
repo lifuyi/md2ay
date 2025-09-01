@@ -171,6 +171,7 @@ def send_markdown_to_wechat_draft():
     markdown_content = data.get('markdown')
     style = data.get('style', 'sample.css')
     thumb_media_id = data.get('thumb_media_id', '')
+    dash_separator = data.get('dashseparator', False)
     
     # 验证必需参数
     if not appid:
@@ -213,28 +214,75 @@ def send_markdown_to_wechat_draft():
     # 3. 渲染Markdown为HTML（使用现有的/render接口逻辑）
     logger.info("Rendering Markdown to HTML")
     try:
-        # 直接调用内部函数渲染Markdown
-        html_content = markdown.markdown(
-            markdown_content,
-            extensions=[
-                'fenced_code',
-                'tables',
-                'nl2br',
-                'pymdownx.superfences',
-                'pymdownx.magiclink'
-            ],
-            extension_configs={
-                'pymdownx.superfences': {
-                    'custom_fences': [
-                        {
-                            'name': 'mermaid',
-                            'class': 'mermaid',
-                            'format': lambda source, language, css_class, options, md, **kwargs: f'<div class="{css_class}">{source}</div>'
+        # 处理dash separator逻辑
+        if dash_separator:
+            logger.info("Processing dash separator mode")
+            # 按 --- 分割内容
+            sections = markdown_content.split('---')
+            logger.info(f"Found {len(sections)} sections after splitting by ---")
+            
+            html_sections = []
+            for i, section in enumerate(sections):
+                section = section.strip()
+                if not section:
+                    continue
+                    
+                logger.info(f"Processing section {i+1}: {section[:50]}...")
+                
+                # 渲染每个section的Markdown
+                section_html = markdown.markdown(
+                    section,
+                    extensions=[
+                        'fenced_code',
+                        'tables',
+                        'nl2br',
+                        'pymdownx.superfences',
+                        'pymdownx.magiclink'
+                    ],
+                    extension_configs={
+                        'pymdownx.superfences': {
+                            'custom_fences': [
+                                {
+                                    'name': 'mermaid',
+                                    'class': 'mermaid',
+                                    'format': lambda source, language, css_class, options, md, **kwargs: f'<div class="{css_class}">{source}</div>'
+                                }
+                            ]
                         }
-                    ]
+                    }
+                )
+                
+                # 第一个section用普通div，其余用section-card
+                if i == 0:
+                    html_sections.append(f'<div class="content-card">{section_html}</div>')
+                else:
+                    html_sections.append(f'<div class="section-card">{section_html}</div>')
+            
+            html_content = ''.join(html_sections)
+            logger.info(f"Generated HTML with {len(html_sections)} sections")
+        else:
+            # 正常模式：直接渲染整个内容
+            html_content = markdown.markdown(
+                markdown_content,
+                extensions=[
+                    'fenced_code',
+                    'tables',
+                    'nl2br',
+                    'pymdownx.superfences',
+                    'pymdownx.magiclink'
+                ],
+                extension_configs={
+                    'pymdownx.superfences': {
+                        'custom_fences': [
+                            {
+                                'name': 'mermaid',
+                                'class': 'mermaid',
+                                'format': lambda source, language, css_class, options, md, **kwargs: f'<div class="{css_class}">{source}</div>'
+                            }
+                        ]
+                    }
                 }
-            }
-        )
+            )
         
         # 加载CSS并内联
         custom_css = ''
