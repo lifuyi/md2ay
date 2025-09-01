@@ -414,6 +414,9 @@ $x = {-b \pm \sqrt{b^2-4ac} \over 2a}$
             updateStatus('就绪');
             updateCharCount();
             
+            // 检查微信配置
+            checkWeChatConfig();
+            
             // Populate theme selector with options from the server
             fetch(`${API_BASE_URL}/styles`)
                 .then(response => {
@@ -465,6 +468,160 @@ $x = {-b \pm \sqrt{b^2-4ac} \over 2a}$
                     // Don't show error message immediately, let user try to use the app
                 });
         });
+
+        // 发送到微信草稿箱
+        function sendToWeChatDraft() {
+            const markdown = editor.value.trim();
+            const theme = themeSelector.value;
+
+            if (!markdown) {
+                alert('请先输入Markdown内容');
+                return;
+            }
+
+            // 获取微信配置
+            const appId = localStorage.getItem('wechat_app_id') || '';
+            const appSecret = localStorage.getItem('wechat_app_secret') || '';
+            const thumbMediaId = localStorage.getItem('wechat_thumb_media_id') || '';
+            
+            // 调试信息
+            console.log('当前微信配置:');
+            console.log('AppID:', appId);
+            console.log('AppSecret:', appSecret);
+            console.log('ThumbMediaId:', thumbMediaId);
+            
+            if (!appId || !appSecret || appId.trim() === '' || appSecret.trim() === '') {
+                console.log('微信配置不完整，中断执行');
+                alert('请先配置微信信息（AppID和AppSecret）');
+                return;
+            }
+            
+            console.log('微信配置验证通过，继续执行');
+
+            showLoading();
+            updateStatus('正在发送到微信草稿箱...');
+
+            // 调试信息
+            console.log('Sending request to send draft');
+            console.log('AppID:', appId);
+            console.log('AppSecret:', appSecret);
+            console.log('Theme:', theme);
+            console.log('ThumbMediaId:', thumbMediaId);
+            
+            const requestData = {
+                appid: appId,
+                secret: appSecret,
+                markdown: markdown,
+                style: theme,
+                thumb_media_id: thumbMediaId
+            };
+            
+            console.log('Request data:', JSON.stringify(requestData));
+            
+            // 直接发送到新的后端接口
+            fetch(`${API_BASE_URL}/wechat/send_draft`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData)
+            })
+            .then(response => {
+                console.log('Received response from server:', response);
+                if (!response.ok) {
+                    console.log('Response not ok:', response.status, response.statusText);
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                hideLoading();
+                if (data.errcode === 0) {
+                    updateStatus('已成功发送到微信草稿箱');
+                    alert('已成功发送到微信草稿箱\n草稿ID: ' + data.media_id);
+                } else {
+                    updateStatus('发送失败', true);
+                    // 如果errorMsg包含Unicode转义序列，尝试解码
+                    let errorMsg = data.errmsg;
+                    try {
+                        // 尝试解析可能包含Unicode转义序列的字符串
+                        errorMsg = JSON.parse('"' + data.errmsg.replace(/"/g, '\\"') + '"');
+                    } catch (e) {
+                        // 如果解析失败，保持原始错误信息
+                        errorMsg = data.errmsg;
+                    }
+                    alert('发送到微信草稿箱失败: ' + errorMsg);
+                }
+            })
+            .catch(error => {
+                hideLoading();
+                updateStatus('发送失败', true);
+                console.log('Final error caught:', error);
+                alert('发送到微信草稿箱失败: ' + error.message);
+            });
+        }
+
+        // 检查微信配置
+        function checkWeChatConfig() {
+            const appId = localStorage.getItem('wechat_app_id');
+            const appSecret = localStorage.getItem('wechat_app_secret');
+            const thumbMediaId = localStorage.getItem('wechat_thumb_media_id');
+            
+            console.log('微信配置检查:');
+            console.log('AppID:', appId);
+            console.log('AppSecret:', appSecret);
+            console.log('ThumbMediaId:', thumbMediaId);
+            
+            if (appId && appSecret) {
+                console.log('微信配置完整');
+                return true;
+            } else {
+                console.log('微信配置不完整');
+                return false;
+            }
+        }
+
+        // 配置微信信息
+        function configureWeChat() {
+            const appId = localStorage.getItem('wechat_app_id') || '';
+            const appSecret = localStorage.getItem('wechat_app_secret') || '';
+            const thumbMediaId = localStorage.getItem('wechat_thumb_media_id') || '';
+            
+            const newAppId = prompt('请输入微信公众号AppID:', appId);
+            if (newAppId === null) return; // 用户取消了输入
+            
+            const newAppSecret = prompt('请输入微信公众号AppSecret:', appSecret);
+            if (newAppSecret === null) return; // 用户取消了输入
+            
+            const newThumbMediaId = prompt('请输入缩略图Media ID (可选):', thumbMediaId);
+            
+            // 只要用户输入了有效的AppID和AppSecret就保存
+            if (newAppId.trim() !== '' && newAppSecret.trim() !== '') {
+                localStorage.setItem('wechat_app_id', newAppId.trim());
+                localStorage.setItem('wechat_app_secret', newAppSecret.trim());
+                if (newThumbMediaId !== null) {
+                    if (newThumbMediaId.trim() !== '') {
+                        localStorage.setItem('wechat_thumb_media_id', newThumbMediaId.trim());
+                    } else {
+                        localStorage.removeItem('wechat_thumb_media_id');
+                    }
+                }
+                alert('微信配置已保存');
+                // 调试信息
+                checkWeChatConfig();
+            } 
+            // 如果用户清空了输入，则清除配置
+            else if (newAppId.trim() === '' && newAppSecret.trim() === '') {
+                localStorage.removeItem('wechat_app_id');
+                localStorage.removeItem('wechat_app_secret');
+                localStorage.removeItem('wechat_thumb_media_id');
+                alert('已清除微信配置');
+            }
+            // 如果只输入了一个字段，给出提示但不保存
+            else {
+                alert('请同时输入AppID和AppSecret');
+            }
+        }
 
         // 键盘快捷键
         document.addEventListener('keydown', (e) => {
