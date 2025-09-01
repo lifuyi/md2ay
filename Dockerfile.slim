@@ -1,0 +1,28 @@
+FROM python:3.9-alpine
+
+WORKDIR /app
+
+# Copy requirements first to leverage Docker cache
+COPY requirements.txt .
+
+# Install python packages with minimal dependencies
+RUN apk add --no-cache --virtual .build-deps gcc musl-dev && \
+    pip install --no-cache-dir --compile -r requirements.txt && \
+    apk del .build-deps && \
+    rm -rf /root/.cache
+
+# Copy only necessary application files
+COPY api_server.py .
+COPY wxcss.py .
+COPY *.css ./
+
+# Create non-root user
+RUN adduser -D -s /bin/sh appuser && \
+    chown -R appuser:appuser /app
+USER appuser
+
+# Expose the port the app runs on
+EXPOSE 5002
+
+# Run the application
+CMD ["python", "api_server.py"]
