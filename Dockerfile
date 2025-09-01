@@ -1,16 +1,17 @@
-FROM python:3.9-slim
+FROM python:3.9-alpine
 
 WORKDIR /app
 
-# Copy requirements first to leverage Docker cache
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy all application files
+# Install python packages and remove build dependencies
+RUN apk add --no-cache --virtual .build-deps gcc musl-dev && \
+    pip install --no-cache-dir -r requirements.txt && \
+    apk del .build-deps
+
 COPY . .
 
-# Expose the port the app runs on
 EXPOSE 5002
 
-# Run the application
 CMD ["python", "api_server.py"]
+

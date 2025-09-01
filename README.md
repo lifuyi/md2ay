@@ -1,23 +1,26 @@
 # md2any
 
-Convert Markdown to any format with customizable CSS styling.
+Convert Markdown to any format with customizable CSS styling and send directly to WeChat Official Account drafts.
 
 ## Features
 
-- Convert Markdown files to HTML
-- Apply custom CSS styles
-- Simple API server for processing
-- Web-based frontend interface
+- Convert Markdown files to HTML with CSS styling
+- Real-time preview in web-based editor
+- Multiple CSS themes for different styling options
+- Send formatted content directly to WeChat Official Account drafts
+- Docker support for easy deployment
+- Responsive design that works on desktop and mobile
 
 ## Files
 
-- `api_server.py`: Backend API server
-- `frontend.html`: Main frontend interface
-- `frontend.js`: Frontend JavaScript
+- `api_server.py`: Backend API server with Markdown rendering and WeChat integration
+- `frontend.html`: Main frontend interface with editor and preview
+- `frontend.js`: Frontend JavaScript with real-time preview and WeChat functionality
 - `wxcss.py`: CSS processing utilities
 - `requirements.txt`: Python dependencies
 - `Dockerfile`: Docker configuration
 - `docker-compose.yml`: Docker Compose setup
+- `sample.css`, `square.css`, `yata.css`: CSS themes for styling output
 
 ## Setup
 
@@ -39,3 +42,18 @@ Build and run with Docker:
 ```
 docker-compose up
 ```
+
+## WeChat Integration
+
+The application can send formatted Markdown content directly to WeChat Official Account drafts:
+
+1. Configure your WeChat Official Account credentials in the web interface
+2. Write your content in Markdown format
+3. Click "Send to WeChat Draft" to publish directly to your WeChat account
+
+## Usage
+
+1. Write or paste your Markdown content in the editor panel
+2. Select a CSS theme from the dropdown
+3. Preview the formatted output in real-time
+4. Download as HTML or PNG, or send directly to WeChat

@@ -27,6 +27,9 @@ sudo apt install -y python3 python3-pip
 # Install virtualenv for Python dependency isolation
 sudo apt install -y python3-venv
 
+# Install build dependencies for Python packages
+sudo apt install -y build-essential
+
 # Install Nginx for reverse proxy
 sudo apt install -y nginx
 
@@ -189,6 +192,15 @@ curl http://localhost
 
 Access your application through your domain name or server IP address in a web browser.
 
+## WeChat Integration Configuration
+
+To use the WeChat integration feature:
+
+1. Register a WeChat Official Account
+2. Obtain your AppID and AppSecret from the WeChat Official Account platform
+3. Configure these credentials in the web interface after deployment
+4. (Optional) Upload a thumbnail image to WeChat and obtain its media_id for use with articles
+
 ## Additional Security Considerations
 
 1. Set up a firewall:
@@ -203,8 +215,15 @@ sudo ufw enable
 
 3. Regularly update your system and application dependencies.
 
+4. For production use with WeChat integration, ensure your server has SSL enabled as WeChat requires HTTPS for API calls.
+
 ## Troubleshooting
 
 - Check application logs: `sudo journalctl -u md2any -f`
 - Check Nginx logs: `sudo tail -f /var/log/nginx/error.log`
 - Restart services if needed: `sudo systemctl restart md2any nginx`
+
+If you encounter issues with the WeChat integration:
+- Verify your AppID and AppSecret are correct
+- Ensure your server has internet access to reach WeChat's API endpoints
+- Check that your WeChat Official Account has the necessary permissions enabled
