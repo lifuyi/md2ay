@@ -1,5 +1,6 @@
 // 配置
-        const API_BASE_URL = 'http://localhost:5002';
+        // Use the same host as the frontend is served from
+        const API_BASE_URL = `http://${window.location.hostname}:5002`;
         
         // 获取DOM元素
         const editor = document.getElementById('editor');
@@ -94,6 +95,32 @@
                 
                 // 为每个部分创建HTML内容
                 let combinedHtml = '';
+                // 获取CSS内容
+                let cssContent = '';
+                try {
+                    const cssResponse = await fetch(`${API_BASE_URL}/${theme}`);
+                    if (cssResponse.ok) {
+                        cssContent = await cssResponse.text();
+                    } else {
+                        console.warn(`Failed to load CSS: ${cssResponse.status} ${cssResponse.statusText}`);
+                    }
+                } catch (cssError) {
+                    console.warn('Failed to load CSS:', cssError);
+                    // Provide a minimal fallback CSS
+                    cssContent = `
+                        .markdown-body {
+                            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+                            background-color: white;
+                            padding: 20px;
+                            border-radius: 8px;
+                        }
+                        body {
+                            margin: 0;
+                            padding: 20px;
+                        }
+                    `;
+                }
+                
                 for (let i = 0; i < sections.length; i++) {
                     const sectionMarkdown = sections[i];
                     
@@ -128,18 +155,9 @@
                     <!DOCTYPE html>
                     <section>
                     <head>
-                        <link rel="stylesheet" href="http://localhost:5002/styles/${theme}">
+                        <style>${cssContent}</style>
                         <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"><\/script>
                         <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"><\/script>
-                        <style>
-                            .section-card {
-                                border: 1px solid #eee;
-                                border-radius: 8px;
-                                padding: 15px;
-                                margin-bottom: 20px;
-                                background: #fafafa;
-                            }
-                        </style>
                     </head>
                     <body>
                         <div class="markdown-body">${combinedHtml}</div>
@@ -398,7 +416,12 @@ $x = {-b \pm \sqrt{b^2-4ac} \over 2a}$
             
             // Populate theme selector with options from the server
             fetch(`${API_BASE_URL}/styles`)
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    return response.json();
+                })
                 .then(styles => {
                     styles.forEach(style => {
                         const option = document.createElement('option');
@@ -411,27 +434,35 @@ $x = {-b \pm \sqrt{b^2-4ac} \over 2a}$
                 })
                 .catch(error => {
                     console.error('Failed to load styles:', error);
-                    updateStatus('Failed to load themes.', true);
+                    // Add default options if API fails
+                    const defaultStyles = ['sample.css', 'square.css', 'yata.css'];
+                    defaultStyles.forEach(style => {
+                        const option = document.createElement('option');
+                        option.value = style;
+                        option.textContent = style.replace('.css', '');
+                        themeSelector.appendChild(option);
+                    });
+                    updateStatus('使用默认主题', false);
+                    renderMarkdown();
                 });
 
             // Check API service
             fetch(`${API_BASE_URL}/health`)
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     if (data.status === 'ok') {
                         updateStatus('API服务已连接');
                     }
                 })
                 .catch(error => {
-                    updateStatus('API服务未连接', true);
-                    preview.innerHTML = `
-                        <div class="error">
-                            <strong>API服务未连接</strong><br>
-                            请确保API服务已启动：<br>
-                            <code>python api_server.py</code><br><br>
-                            <small>错误: ${error.message}</small>
-                        </div>
-                    `;
+                    console.error('Health check failed:', error);
+                    updateStatus('API服务状态未知', false);
+                    // Don't show error message immediately, let user try to use the app
                 });
         });
 
