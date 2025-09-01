@@ -38,8 +38,24 @@ Convert Markdown to any format with customizable CSS styling and send directly t
 
 ## Docker
 
-Build and run with Docker:
+### Using Pre-built Images
+
+Pull and run the latest image from Docker Hub:
+```bash
+docker pull lifuyi/md2wechat:latest
+docker run -d -p 5002:5002 lifuyi/md2wechat:latest
 ```
+
+Or use the slimmer version (recommended):
+```bash
+docker pull lifuyi/md2wechat:slim
+docker run -d -p 5002:5002 lifuyi/md2wechat:slim
+```
+
+### Building from Source
+
+Build and run with Docker:
+```bash
 docker-compose up
 ```
 
