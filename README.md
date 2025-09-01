@@ -50,21 +50,41 @@ Convert Markdown to any format with customizable CSS styling and send directly t
 Pull and run the latest image from Docker Hub:
 ```bash
 docker pull lifuyi/md2wechat:latest
-docker run -d -p 5002:5002 lifuyi/md2wechat:latest
+docker run -d -p 5002:5002 \
+  --name md2wechat \
+  lifuyi/md2wechat:latest
 ```
 
-Or use the slimmer version (recommended):
+Or use the slimmer version (recommended for production):
 ```bash
 docker pull lifuyi/md2wechat:slim
-docker run -d -p 5002:5002 lifuyi/md2wechat:slim
+docker run -d -p 5002:5002 \
+  --name md2wechat-slim \
+  lifuyi/md2wechat:slim
 ```
 
 ### Building from Source
 
-Build and run with Docker:
+Development build:
 ```bash
-docker-compose up
+docker-compose up -d
 ```
+
+Production build:
+```bash
+docker-compose -f docker-compose.prod.yml up -d
+```
+
+### With WeChat Configuration
+```bash
+docker run -d -p 5002:5002 \
+  -e WECHAT_APPID=your_wechat_appid \
+  -e WECHAT_SECRET=your_wechat_secret \
+  --name md2wechat \
+  lifuyi/md2wechat:latest
+```
+
+For detailed deployment options, see [DEPLOYMENT.md](DEPLOYMENT.md)
 
 ## WeChat Integration
 

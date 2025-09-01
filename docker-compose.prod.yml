@@ -9,4 +9,7 @@ services:
       - "5002:5002"
     environment:
       - FLASK_ENV=production
+      # WeChat API configuration (set your actual credentials)
+      # - WECHAT_APPID=${WECHAT_APPID}
+      # - WECHAT_SECRET=${WECHAT_SECRET}
     restart: unless-stopped

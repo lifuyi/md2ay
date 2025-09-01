@@ -28,3 +28,15 @@ build/
 
 # Logs
 *.log
+
+# Temporary test files
+tmp_rovodev_*
+
+# Local development files
+chinese_news_output.html
+*.html.bak
+
+# IDE
+.vscode/
+*.swp
+*.swo

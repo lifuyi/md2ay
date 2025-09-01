@@ -9,7 +9,17 @@ RUN apk add --no-cache --virtual .build-deps gcc musl-dev && \
     pip install --no-cache-dir -r requirements.txt && \
     apk del .build-deps
 
-COPY . .
+# Copy application files
+COPY api_server.py .
+COPY frontend.html .
+COPY frontend.js .
+COPY wxcss.py .
+
+# Copy all CSS themes including new Chinese news themes
+COPY *.css .
+
+# Copy documentation
+COPY *.md .
 
 EXPOSE 5002
 

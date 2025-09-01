@@ -12,8 +12,17 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Remove build dependencies
 RUN apk del .build-deps
 
-# Copy application code
-COPY . .
+# Copy application files
+COPY api_server.py .
+COPY frontend.html .
+COPY frontend.js .
+COPY wxcss.py .
+
+# Copy all CSS themes including new Chinese news themes
+COPY *.css .
+
+# Copy documentation
+COPY *.md .
 
 # Install Gunicorn
 RUN pip install gunicorn
