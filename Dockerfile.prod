@@ -19,7 +19,7 @@ COPY frontend.js .
 COPY wxcss.py .
 
 # Copy all CSS themes including new Chinese news themes
-COPY *.css ./
+COPY themes/*.css ./themes/
 
 # Copy documentation
 COPY *.md ./
@@ -31,4 +31,4 @@ RUN pip install gunicorn
 EXPOSE 5002
 
 # Run with Gunicorn WSGI server
-CMD ["gunicorn", "--bind", "0.0.0.0:5002", "--workers", "4", "api_server:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:5002", "--workers", "4", "--pythonpath", ".", "api_server:app"]

@@ -6,10 +6,6 @@ services:
     ports:
       - "5002:5002"
     volumes:
-      - .:/app
+      - ./themes:/app/themes
     environment:
       - FLASK_ENV=development
-      - FLASK_DEBUG=1
-      # WeChat API configuration (optional - can be set via API calls)
-      # - WECHAT_APPID=your_wechat_appid
-      # - WECHAT_SECRET=your_wechat_secret

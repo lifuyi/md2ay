@@ -16,12 +16,11 @@ COPY frontend.js .
 COPY wxcss.py .
 
 # Copy all CSS themes including new Chinese news themes
-COPY *.css .
+COPY themes/*.css ./themes/
 
 # Copy documentation
-COPY *.md .
+COPY *.md ./
 
 EXPOSE 5002
 
 CMD ["python", "api_server.py"]
-
