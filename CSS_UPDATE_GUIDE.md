@@ -36,7 +36,7 @@ No changes needed - cache-busting is automatic.
 docker-compose -f docker-compose.prod.yml up -d
 
 # Update CSS files on host - changes are immediately available
-cp new-theme.css ./
+cp new-theme.css ./themes/
 # No restart needed!
 ```
 
@@ -56,7 +56,7 @@ docker-compose -f docker-compose.prod.yml up --build -d
 
 1. **Add a new CSS file:**
    ```bash
-   echo "body { background: red; }" > test-new.css
+   echo "body { background: red; }" > themes/test-new.css
    ```
 
 2. **Verify it appears in styles list:**
@@ -77,7 +77,7 @@ docker-compose -f docker-compose.prod.yml up --build -d
 
 - `frontend.js`: Added cache-busting parameters
 - `api_server.py`: Added cache headers and refresh endpoint
-- `docker-compose.prod.yml`: Added volume mounting for CSS files
+- `docker-compose.prod.yml`: Added volume mounting for CSS files in themes directory
 
 ## Benefits
 

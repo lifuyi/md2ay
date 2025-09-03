@@ -23,11 +23,16 @@ Convert Markdown to any format with customizable CSS styling and send directly t
 - `wxcss.py`: CSS processing utilities
 - `requirements.txt`: Python dependencies
 - `Dockerfile`: Docker configuration
-- `docker-compose.yml`: Docker Compose setup
-- `sample.css`, `square.css`, `yata.css`, `custom.css`: Standard CSS themes
-- `chinese_news_*.css`: Extracted Chinese news themes (original, dark, colorful, minimal)
+- `Dockerfile.prod`: Production Docker configuration
+- `docker-compose.yml`: Docker Compose setup for development
+- `docker-compose.prod.yml`: Docker Compose setup for production
+- CSS themes are now organized in the `themes/` directory:
+  - Standard themes: `sample.css`, `square.css`, `yata.css`
+  - Chinese news themes: `chinese_news_extracted.css`, `chinese_news_dark.css`, `chinese_news_colorful.css`, `chinese_news_minimal.css`
+  - Additional themes: `earthy.css`, `forest.css`, `jewel.css`, `ocean.css`, `pastel.css`, `sunset.css`
 - `THEMES_GUIDE.md`: Comprehensive guide to all available themes
 - `WECHAT_INTEGRATION.md`: Complete WeChat integration documentation
+- `CSS_UPDATE_GUIDE.md`: Guide for updating CSS styles
 
 ## Setup
 
@@ -49,18 +54,10 @@ Convert Markdown to any format with customizable CSS styling and send directly t
 
 Pull and run the latest image from Docker Hub:
 ```bash
-docker pull lifuyi/md2wechat:latest
+docker pull lifuyi/md2any:latest
 docker run -d -p 5002:5002 \
-  --name md2wechat \
-  lifuyi/md2wechat:latest
-```
-
-Or use the slimmer version (recommended for production):
-```bash
-docker pull lifuyi/md2wechat:slim
-docker run -d -p 5002:5002 \
-  --name md2wechat-slim \
-  lifuyi/md2wechat:slim
+  --name md2any \
+  lifuyi/md2any:latest
 ```
 
 ### Building from Source
@@ -80,11 +77,9 @@ docker-compose -f docker-compose.prod.yml up -d
 docker run -d -p 5002:5002 \
   -e WECHAT_APPID=your_wechat_appid \
   -e WECHAT_SECRET=your_wechat_secret \
-  --name md2wechat \
-  lifuyi/md2wechat:latest
+  --name md2any \
+  lifuyi/md2any:latest
 ```
-
-For detailed deployment options, see [DEPLOYMENT.md](DEPLOYMENT.md)
 
 ## WeChat Integration
 
@@ -190,5 +185,4 @@ Another visually separated section.
 
 - **[THEMES_GUIDE.md](THEMES_GUIDE.md)** - Complete guide to all CSS themes and styling options
 - **[WECHAT_INTEGRATION.md](WECHAT_INTEGRATION.md)** - Detailed WeChat integration documentation
-- **[THEMES.md](THEMES.md)** - Basic theme information
-- **[Option.md](Option.md)** - API usage examples
+- **[CSS_UPDATE_GUIDE.md](CSS_UPDATE_GUIDE.md)** - Guide for updating CSS styles
