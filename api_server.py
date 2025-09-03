@@ -98,8 +98,8 @@ def render_markdown():
     custom_css = ''
     try:
         # Security: Ensure style_name is a valid filename and doesn't contain path traversal characters.
-        if '..' not in style and style.endswith('.css'):
-            with open(f'./themes/{style}', 'r', encoding='utf-8') as f:
+        if '..' not in style_name and style_name.endswith('.css'):
+            with open(f'./themes/{style_name}', 'r', encoding='utf-8') as f:
                 custom_css = f.read()
     except FileNotFoundError:
         # Handle case where style file doesn't exist
@@ -312,7 +312,7 @@ def send_markdown_to_wechat_draft():
         custom_css = ''
         try:
             if '..' not in style and style.endswith('.css'):
-                with open(style, 'r', encoding='utf-8') as f:
+                with open(f'./themes/{style}', 'r', encoding='utf-8') as f:
                     custom_css = f.read()
         except FileNotFoundError:
             pass
