@@ -9,3 +9,7 @@ services:
       - "5002:5002"
     environment:
       - FLASK_ENV=production
+    # Only mount the themes directory if you need to override CSS files
+    # Comment out the volumes section if you don't need to override files
+    # volumes:
+    #   - ./themes:/app/themes:ro

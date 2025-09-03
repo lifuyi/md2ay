@@ -91,6 +91,7 @@
                 iframe.style.border = 'none';
                 iframe.style.background = 'white';
                 iframe.style.borderRadius = '4px';
+                iframe.sandbox = 'allow-scripts allow-same-origin'; // Add sandbox for security
                 
                 // 添加到预览区域
                 preview.appendChild(iframe);
@@ -102,11 +103,16 @@
                 try {
                     // Add cache-busting parameter to force fresh CSS load
                     const cacheBuster = Date.now();
-                    const cssResponse = await fetch(`${API_BASE_URL}/${theme}?v=${cacheBuster}`);
+                    const cssResponse = await fetch(`${API_BASE_URL}/themes/${theme}?v=${cacheBuster}`);
                     if (cssResponse.ok) {
                         cssContent = await cssResponse.text();
                     } else {
                         console.warn(`Failed to load CSS: ${cssResponse.status} ${cssResponse.statusText}`);
+                        // Try alternative path
+                        const altCssResponse = await fetch(`${API_BASE_URL}/${theme}?v=${cacheBuster}`);
+                        if (altCssResponse.ok) {
+                            cssContent = await altCssResponse.text();
+                        }
                     }
                 } catch (cssError) {
                     console.warn('Failed to load CSS:', cssError);
@@ -160,19 +166,19 @@
                     <html>
                     <head>
                         <style>${cssContent}</style>
-                        <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"><\/script>
+                        <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
                         <script>
                             window.MathJax = {
                                 tex: {
-                                    inlineMath: [['$', '$'], ['\\\\(', '\\\\)']],
-                                    displayMath: [['$$', '$$'], ['\\\\[', '\\\\]']]
+                                    inlineMath: [['$', '$'], ['\\(', '\\)']],
+                                    displayMath: [['$$', '$$'], ['\\[', '\\]']]
                                 },
                                 svg: {
                                     fontCache: 'global'
                                 }
                             };
-                        <\/script>
-                        <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"><\/script>
+                        </script>
+                        <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
                     </head>
                     <body>
                         <div class="markdown-body">${combinedHtml}</div>
@@ -182,7 +188,7 @@
                             if (window.MathJax) {
                                 window.MathJax.typesetPromise();
                             }
-                        <\/script>
+                        </script>
                     </body>
                     </html>
                 `;
@@ -269,7 +275,6 @@ console.log(result);
 
 
 ## Mermaid图表测试
-
 
 
   
