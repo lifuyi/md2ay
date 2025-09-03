@@ -7,6 +7,9 @@ services:
       dockerfile: Dockerfile.prod
     ports:
       - "5002:5002"
+    volumes:
+      # Mount CSS files as volume for live updates without rebuild
+      - ./*.css:/app/
     environment:
       - FLASK_ENV=production
       # WeChat API configuration (set your actual credentials)

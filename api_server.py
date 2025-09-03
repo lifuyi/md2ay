@@ -5,6 +5,7 @@ import os
 import requests
 import json
 import logging
+import time
 from css_inline import inline
 
 # 配置日志
@@ -24,7 +25,13 @@ def index():
 
 @app.route('/<path:path>')
 def send_static(path):
-    return send_from_directory('.', path)
+    response = send_from_directory('.', path)
+    # Add cache control headers for CSS files
+    if path.endswith('.css'):
+        response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '0'
+    return response
 
 @app.route('/health', methods=['GET'])
 def health_check():
@@ -34,6 +41,23 @@ def health_check():
 def get_styles():
     styles = [f for f in os.listdir('.') if f.endswith('.css')]
     return jsonify(styles)
+
+@app.route('/styles/refresh', methods=['POST'])
+def refresh_styles():
+    """Force refresh of CSS styles cache"""
+    try:
+        styles = [f for f in os.listdir('.') if f.endswith('.css')]
+        return jsonify({
+            'status': 'success',
+            'message': 'Styles cache refreshed',
+            'styles': styles,
+            'timestamp': int(time.time() * 1000)
+        }), 200
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': f'Failed to refresh styles: {str(e)}'
+        }), 500
 
 
 @app.route('/styles/<path:path>')

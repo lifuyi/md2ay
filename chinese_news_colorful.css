@@ -13,14 +13,17 @@ body {
 
 /* Main container */
 .markdown-body {
-    width: 600px;
-    max-width: 100%;
+    width: 100%;
+    max-width: 680px;
     margin: 0 auto;
     background: rgba(255, 255, 255, 0.95);
     border-radius: 20px;
-    overflow: hidden;
+    overflow: visible;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
     backdrop-filter: blur(10px);
+    padding: 0;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 /* Header section with logo */
@@ -30,6 +33,9 @@ body {
     border-bottom: none;
     padding: 25px;
     color: white;
+    margin: 0;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .header-section img {
@@ -38,10 +44,9 @@ body {
     border-radius: 10px;
 }
 
-/* Content cards - each article/section */
+/* Content cards - regular articles */
 .content-card, 
-.section-card,
-div:not(.header-section) {
+div:not(.header-section):not(.section-card) {
     background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
     border-radius: 20px;
     margin: 20px;
@@ -51,6 +56,28 @@ div:not(.header-section) {
     border: 2px solid transparent;
     background-clip: padding-box;
     position: relative;
+    width: calc(100% - 40px);
+    box-sizing: border-box;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+/* Section cards - enhanced styling */
+.section-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9ff 100%);
+    border-radius: 20px;
+    margin: 40px 20px;
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.1);
+    overflow: hidden;
+    padding: 30px 25px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    position: relative;
+    width: calc(100% - 40px);
+    box-sizing: border-box;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    transition: all 0.3s ease;
 }
 
 .content-card::before,
@@ -63,12 +90,20 @@ div:not(.header-section) {
     height: 4px;
     background: linear-gradient(90deg, #ff6b9d 0%, #667eea 50%, #764ba2 100%);
     border-radius: 20px 20px 0 0;
+    z-index: 1;
 }
 
 /* Last card margin adjustment */
-.content-card:last-child,
-.section-card:last-child {
+.content-card:last-child {
     margin-bottom: 10px;
+}
+
+.section-card:last-child {
+    margin-bottom: 40px;
+}
+
+.section-card:first-of-type {
+    margin-top: 40px;
 }
 
 /* Headings */
@@ -83,6 +118,8 @@ h1, h2 {
     -webkit-text-fill-color: transparent;
     background-clip: text;
     margin-top: 0;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 h3 {
@@ -116,6 +153,9 @@ p {
     margin-bottom: 12px;
     margin-top: 0;
     text-align: justify;
+    word-wrap: break-word;
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 
 /* Strong/bold text */
@@ -179,6 +219,8 @@ li {
     margin-bottom: 8px;
     color: #4a5568;
     position: relative;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 /* Images */
@@ -215,6 +257,9 @@ pre {
     font-size: 14px;
     line-height: 1.5;
     position: relative;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    max-width: 100%;
 }
 
 pre::before {
@@ -279,6 +324,7 @@ table {
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 5px 15px rgba(102, 126, 234, 0.1);
+    table-layout: fixed;
 }
 
 th, td {
@@ -287,6 +333,8 @@ th, td {
     border-bottom: 1px solid #e2e8f0;
     font-size: 15px;
     line-height: 1.6;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 th {
@@ -319,12 +367,18 @@ hr {
         border-radius: 15px;
     }
     
-    .content-card,
-    .section-card,
-    div:not(.header-section) {
+    .content-card {
         margin: 15px 10px;
         padding: 20px;
         border-radius: 15px;
+        width: calc(100% - 20px);
+    }
+    
+    .section-card {
+        margin: 30px 10px;
+        padding: 20px;
+        border-radius: 15px;
+        width: calc(100% - 20px);
     }
     
     h1, h2 {
@@ -353,11 +407,16 @@ hr {
 }
 
 @media (max-width: 480px) {
-    .content-card,
-    .section-card,
-    div:not(.header-section) {
+    .content-card {
         margin: 10px 5px;
         padding: 15px;
+        width: calc(100% - 10px);
+    }
+    
+    .section-card {
+        margin: 20px 5px;
+        padding: 15px;
+        width: calc(100% - 10px);
     }
     
     h1, h2 {

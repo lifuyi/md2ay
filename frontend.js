@@ -98,7 +98,9 @@
                 // 获取CSS内容
                 let cssContent = '';
                 try {
-                    const cssResponse = await fetch(`${API_BASE_URL}/${theme}`);
+                    // Add cache-busting parameter to force fresh CSS load
+                    const cacheBuster = Date.now();
+                    const cssResponse = await fetch(`${API_BASE_URL}/${theme}?v=${cacheBuster}`);
                     if (cssResponse.ok) {
                         cssContent = await cssResponse.text();
                     } else {

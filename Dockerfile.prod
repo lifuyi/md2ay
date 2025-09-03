@@ -19,10 +19,10 @@ COPY frontend.js .
 COPY wxcss.py .
 
 # Copy all CSS themes including new Chinese news themes
-COPY *.css .
+COPY *.css ./
 
 # Copy documentation
-COPY *.md .
+COPY *.md ./
 
 # Install Gunicorn
 RUN pip install gunicorn
