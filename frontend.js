@@ -155,7 +155,7 @@
                 
                 const fullHtml = `
                     <!DOCTYPE html>
-                    <section>
+                    <html>
                     <head>
                         <style>${cssContent}</style>
                         <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"><\/script>
@@ -171,7 +171,7 @@
                             }
                         <\/script>
                     </body>
-                    </section>
+                    </html>
                 `;
 
                 iframe.srcdoc = fullHtml;

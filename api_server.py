@@ -39,14 +39,19 @@ def health_check():
 
 @app.route('/styles')
 def get_styles():
-    styles = [f for f in os.listdir('.') if f.endswith('.css')]
-    return jsonify(styles)
+    try:
+        styles = [f for f in os.listdir('./themes') if f.endswith('.css')]
+        return jsonify(styles)
+    except FileNotFoundError:
+        # Fallback to current directory if themes folder doesn't exist
+        styles = [f for f in os.listdir('.') if f.endswith('.css')]
+        return jsonify(styles)
 
 @app.route('/styles/refresh', methods=['POST'])
 def refresh_styles():
     """Force refresh of CSS styles cache"""
     try:
-        styles = [f for f in os.listdir('.') if f.endswith('.css')]
+        styles = [f for f in os.listdir('./themes') if f.endswith('.css')]
         return jsonify({
             'status': 'success',
             'message': 'Styles cache refreshed',
@@ -62,7 +67,7 @@ def refresh_styles():
 
 @app.route('/styles/<path:path>')
 def send_styles(path):
-    return send_from_directory('.', path)
+    return send_from_directory('./themes', path)
 
 
 @app.route('/render', methods=['POST'])
