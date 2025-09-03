@@ -9,7 +9,12 @@ services:
       - "5002:5002"
     volumes:
       # Mount CSS files as volume for live updates without rebuild
-      - ./*.css:/app/
+      - ./chinese_news_colorful.css:/app/chinese_news_colorful.css
+      - ./chinese_news_extracted.css:/app/chinese_news_extracted.css
+      - ./sample.css:/app/sample.css
+      - ./square.css:/app/square.css
+      - ./test.css:/app/test.css
+      - ./yata.css:/app/yata.css
     environment:
       - FLASK_ENV=production
       # WeChat API configuration (set your actual credentials)
