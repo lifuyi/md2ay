@@ -1,0 +1,191 @@
+/* 全局样式 */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: #f9f8f4;
+    color: #333333;
+    line-height: 1.6;
+}
+
+/* 容器样式 */
+.markdown-body {
+    background-color: rgb(249, 248, 244);
+    border-radius: 24px;
+    padding: 20px;
+    max-width: 680px;
+    margin: 0 auto;
+    width: 100%;
+    box-shadow: rgba(0, 0, 0, 0.06) 0px 12px 35px;
+}
+
+.section-card{
+  --ig-gradient-primary: #667eea;
+  --ig-gradient-secondary: #764ba2;
+  --ig-gradient-tertiary: #f093fb;
+  --ig-surface: rgba(255, 255, 255, 0.65);
+  --ig-surface-variant: rgba(255, 255, 255, 0.8);
+  --ig-text-primary: #1a1a1a;
+  --ig-accent: #ff6b9d;
+  --ig-border: rgba(255, 255, 255, 0.25);
+  --ig-shadow: rgba(102, 126, 234, 0.2);
+  --ig-glow: rgba(240, 147, 251, 0.4);
+  background: linear-gradient(90deg, rgba(50, 0, 0, 0.03) 0%, rgba(255, 255, 255, 0) 11.49%) 0% 0% / 20px 20px repeat scroll padding-box border-box, linear-gradient(360deg, rgba(50, 0, 0, 0.04) 0%, rgba(255, 255, 255, 0) 12.16%) 0% 0% / 20px 20px repeat rgba(0, 0, 0, 0);
+
+
+}
+
+/* 标题样式 */
+h1 {
+    padding: 0.8em 1.5em;
+    margin: 1.4em 0 1em;
+    font-size: 22px;
+    font-weight: 700;
+    text-align: center;
+    letter-spacing: 0.1em;
+    line-height: 1.2;
+    background: linear-gradient(135deg, rgb(0, 122, 255) 0%, rgb(88, 86, 214) 50%, rgb(255, 45, 85) 100%);
+    color: rgb(255, 255, 255);
+    border-radius: 12px;
+    box-shadow: rgba(0, 122, 255, 0.2) 0px 4px 15px;
+}
+
+h2 {
+    padding: 0.4em 0 0.5em 0.8em;
+    margin: 1.8em 0 1em;
+    color: rgb(29, 29, 31);
+    font-size: 20px;
+    font-weight: 600;
+    text-align: left;
+    border-left: 3px solid;
+    border-image: linear-gradient(to bottom, rgb(0, 122, 255), rgb(88, 86, 214)) 1;
+}
+
+h3 {
+    padding: 0.3em 0 0.4em 0.7em;
+    margin: 1.6em 0 0.8em;
+    color: rgb(29, 29, 31);
+    font-size: 18px;
+    font-weight: 600;
+    text-align: left;
+    border-left: 2px solid;
+    border-image: linear-gradient(to bottom, rgb(52, 199, 89), rgb(88, 86, 214)) 1;
+}
+
+h4 {
+    padding: 0.2em 0 0.2em 0.6em;
+    margin: 1.5em 0 0.8em;
+    color: rgb(29, 29, 31);
+    font-size: 16px;
+    font-weight: 600;
+    text-align: left;
+    border-left: 2px solid rgb(255, 204, 0);
+}
+
+/* 段落样式 */
+p {
+    margin: 1.2em 0;
+    letter-spacing: 0.1em;
+    color: rgb(51, 51, 51);
+    text-align: justify;
+    line-height: 1.8;
+    font-size: 15px;
+}
+
+/* 强调文本样式 */
+strong {
+    font-weight: 600;
+    background-image: linear-gradient(135deg, rgb(0, 122, 255), rgb(88, 86, 214));
+    background-clip: text;
+    color: transparent;
+}
+
+/* 列表样式 */
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 1.2em 0;
+    color: #333333;
+    font-size: 15px;
+}
+
+li {
+    margin: 0.4em 0;
+    padding: 0;
+    line-height: 1.7;
+    font-size: 15px;
+}
+
+li section {
+    margin-left: 1em;
+}
+
+/* 代码块样式 */
+pre {
+    font-size: 14px;
+    overflow-x: auto;
+    border-radius: 8px;
+    padding: 1.2em;
+    line-height: 1.5;
+    margin: 1.5em 0;
+    background: linear-gradient(to right, #007aff, #5856d6, #ff2d55) 0 0 / 100% 3px no-repeat, #fbfbfd 0 3px;
+    box-shadow: 0 4px 15px rgba(88, 86, 214, 0.1);
+}
+
+code {
+    background: none;
+    padding: 0;
+    font-family: 'SFMono-Regular', Consolas, Menlo, monospace;
+    font-size: 14px;
+    color: #1d1d1f;
+    line-height: 1.5;
+}
+
+/* 水平分隔线样式 */
+hr {
+    height: 2px;
+    border: none;
+    margin: 2.5em 0;
+    background-image: linear-gradient(to right, rgba(0, 122, 255, 0), #007aff, #5856d6, #ff2d55, rgba(255, 45, 85, 0));
+}
+
+/* 图片样式 */
+img.rich_pages {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+/* 居中对齐的区块 */
+section[style*="text-align: center"] {
+    text-align: center;
+    margin: 1em 0;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+        border-radius: 16px;
+    }
+    
+    h1 {
+        font-size: 20px;
+        padding: 0.6em 1em;
+    }
+    
+    h2 {
+        font-size: 18px;
+    }
+    
+    h3 {
+        font-size: 16px;
+    }
+    
+    h4 {
+        font-size: 15px;
+    }
+    
+    p, li {
+        font-size: 14px;
+    }
+}
