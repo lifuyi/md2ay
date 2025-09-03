@@ -7,7 +7,5 @@ services:
       dockerfile: Dockerfile.prod
     ports:
       - "5002:5002"
-    volumes:
-      - ./themes:/app/themes
     environment:
       - FLASK_ENV=production

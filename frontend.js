@@ -1,6 +1,8 @@
 // 配置
         // Use the same host as the frontend is served from
-        const API_BASE_URL = `http://${window.location.hostname}:5002`;
+        const API_BASE_URL = window.location.hostname ? 
+            `http://${window.location.hostname}:5002` : 
+            'http://localhost:5002';
         
         // 获取DOM元素
         const editor = document.getElementById('editor');
@@ -159,6 +161,17 @@
                     <head>
                         <style>${cssContent}</style>
                         <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"><\/script>
+                        <script>
+                            window.MathJax = {
+                                tex: {
+                                    inlineMath: [['$', '$'], ['\\\\(', '\\\\)']],
+                                    displayMath: [['$$', '$$'], ['\\\\[', '\\\\]']]
+                                },
+                                svg: {
+                                    fontCache: 'global'
+                                }
+                            };
+                        <\/script>
                         <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"><\/script>
                     </head>
                     <body>
@@ -420,7 +433,8 @@ $x = {-b \pm \sqrt{b^2-4ac} \over 2a}$
             checkWeChatConfig();
             
             // Populate theme selector with options from the server
-            fetch(`${API_BASE_URL}/styles`)
+            const cacheBuster = Date.now();
+            fetch(`${API_BASE_URL}/styles?v=${cacheBuster}`)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
