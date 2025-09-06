@@ -11,6 +11,7 @@
         const status = document.getElementById('status');
         const charCount = document.getElementById('char-count');
         const loading = document.getElementById('loading');
+        const clearEditorBtn = document.getElementById('clear-editor');
 
         // 防抖函数
         let debounceTimer;
@@ -418,6 +419,84 @@ $x = {-b \pm \sqrt{b^2-4ac} \over 2a}$
             });
         }
 
+        // 将Markdown转换为纯文本
+        function markdownToText(markdown) {
+            // 移除Markdown语法，只保留纯文本内容
+            return markdown
+                // 移除代码块
+                .replace(/```[\s\S]*?```/g, '')
+                // 移除行内代码
+                .replace(/`[^`]*`/g, '')
+                // 移除链接，保留链接文本
+                .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+                // 移除图片
+                .replace(/!\[([^\]]*)\]\([^)]+\)/g, '')
+                // 移除标题标记
+                .replace(/^#+\s*/gm, '')
+                // 移除粗体和斜体标记
+                .replace(/\*\*([^*]+)\*\*/g, '$1')
+                .replace(/\*([^*]+)\*/g, '$1')
+                .replace(/__([^_]+)__/g, '$1')
+                .replace(/_([^_]+)_/g, '$1')
+                // 移除删除线
+                .replace(/~~([^~]+)~~/g, '$1')
+                // 移除引用标记
+                .replace(/^>\s*/gm, '')
+                // 移除列表标记
+                .replace(/^[\d-]\.\s*/gm, '')
+                // 移除水平线
+                .replace(/^[-*]{3,}$/gm, '')
+                // 移除多余的空行（保留最多两个连续的换行符）
+                .replace(/\n{3,}/g, '\n\n')
+                // 去除首尾空格
+                .trim();
+        }
+
+        // 下载MD（原始Markdown）
+        function downloadMD() {
+            const markdown = editor.value.trim();
+            const theme = themeSelector.value;
+
+            if (!markdown) {
+                alert('请先输入Markdown内容');
+                return;
+            }
+
+            const blob = new Blob([markdown], { type: 'text/markdown' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `markdown-${theme.replace('.css', '')}-${Date.now()}.md`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // 下载TXT（纯文本）
+        function downloadTXT() {
+            const markdown = editor.value.trim();
+            const theme = themeSelector.value;
+
+            if (!markdown) {
+                alert('请先输入Markdown内容');
+                return;
+            }
+
+            // 将Markdown转换为纯文本
+            const plainText = markdownToText(markdown);
+            
+            const blob = new Blob([plainText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `markdown-${theme.replace('.css', '')}-${Date.now()}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
         // 事件监听
         editor.addEventListener('input', debounce(() => {
             updateCharCount();
@@ -428,6 +507,11 @@ $x = {-b \pm \sqrt{b^2-4ac} \over 2a}$
         
         // 为分隔线拆分复选框添加事件监听器
         document.getElementById('split-checkbox').addEventListener('change', renderMarkdown);
+        
+        // 为清空编辑器按钮添加事件监听器
+        if (clearEditorBtn) {
+            clearEditorBtn.addEventListener('click', clearEditor);
+        }
 
         // 初始化
         document.addEventListener('DOMContentLoaded', () => {
@@ -644,6 +728,13 @@ $x = {-b \pm \sqrt{b^2-4ac} \over 2a}$
             }
         }
 
+        // 清空编辑器内容
+        function clearEditor() {
+            editor.value = '';
+            updateCharCount();
+            renderMarkdown();
+        }
+
         // 键盘快捷键
         document.addEventListener('keydown', (e) => {
             if (e.ctrlKey || e.metaKey) {
@@ -657,5 +748,11 @@ $x = {-b \pm \sqrt{b^2-4ac} \over 2a}$
                         renderMarkdown();
                         break;
                 }
+            }
+            
+            // Ctrl+Shift+Backspace 清空编辑器
+            if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'Backspace') {
+                e.preventDefault();
+                clearEditor();
             }
         });

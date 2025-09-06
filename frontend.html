@@ -257,6 +257,8 @@
                 <div class="dropdown-content">
                     <a href="#" onclick="downloadHTML()"><i class="fas fa-file-code"></i> 下载HTML</a>
                     <a href="#" onclick="downloadPNG()"><i class="fas fa-image"></i> 下载PNG</a>
+                    <a href="#" onclick="downloadMD()"><i class="fas fa-file-alt"></i> 下载MD</a>
+                    <a href="#" onclick="downloadTXT()"><i class="fas fa-file-alt"></i> 下载TXT</a>
                 </div>
             </div>
             <div class="dropdown">
@@ -275,6 +277,9 @@
         <div class="editor-pane">
             <div class="pane-header">
                 <i class="fas fa-edit"></i> 编辑器
+                <button id="clear-editor" class="btn btn-secondary" style="float: right; padding: 2px 8px;" title="清空编辑器">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
             </div>
             <textarea id="editor" placeholder="请输入Markdown内容..."></textarea>
         </div>
