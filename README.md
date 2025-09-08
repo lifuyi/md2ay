@@ -12,6 +12,7 @@ Convert Markdown to any format with customizable CSS styling and send directly t
 - **Enhanced Section Cards**: Special styling for separated content sections with hover effects
 - **CSS Extraction**: Extract and recreate CSS from existing HTML files
 - Docker support for easy deployment
+- Multi-architecture Docker images (AMD64 and ARM64)
 - Responsive design that works on desktop and mobile
 - API endpoints for programmatic access
 
@@ -26,6 +27,11 @@ Convert Markdown to any format with customizable CSS styling and send directly t
 - `Dockerfile.prod`: Production Docker configuration
 - `docker-compose.yml`: Docker Compose setup for development
 - `docker-compose.prod.yml`: Docker Compose setup for production
+- `build-multi-arch.sh`: Multi-architecture Docker build script
+- `verify-multi-arch.sh`: Multi-architecture image verification script
+- `build-and-push.sh`: Build and push production image to Docker Hub
+- `push-to-dockerhub.sh`: Push existing image to Docker Hub
+- `MULTI_ARCH_BUILD_INSTRUCTIONS.md`: Instructions for building multi-arch images
 - CSS themes are now organized in the `themes/` directory:
   - Standard themes: `sample.css`, `square.css`, `yata.css`
   - Chinese news themes: `chinese_news_extracted.css`, `chinese_news_dark.css`, `chinese_news_colorful.css`, `chinese_news_minimal.css`
@@ -60,6 +66,24 @@ docker run -d -p 5002:5002 \
   lifuyi/md2any:latest
 ```
 
+### Multi-Architecture Support
+
+The Docker image now supports both AMD64 and ARM64 architectures. Docker will automatically select the correct version for your platform.
+
+```bash
+# Auto-detection (recommended)
+docker run -d -p 5002:5002 --name md2any lifuyi/md2any:latest
+
+# Explicit platform selection
+# For AMD64 (Intel/AMD servers)
+docker run --platform linux/amd64 -d -p 5002:5002 --name md2any lifuyi/md2any:latest
+
+# For ARM64 (Apple Silicon, AWS Graviton)
+docker run --platform linux/arm64 -d -p 5002:5002 --name md2any lifuyi/md2any:latest
+```
+
+For detailed instructions on building multi-architecture images, see [MULTI_ARCH_BUILD_INSTRUCTIONS.md](MULTI_ARCH_BUILD_INSTRUCTIONS.md).
+
 ### Building from Source
 
 Development build:
@@ -71,6 +95,20 @@ Production build:
 ```bash
 docker-compose -f docker-compose.prod.yml up -d
 ```
+
+### Building and Pushing to Docker Hub
+
+For maintaining the public Docker image, you can use the provided scripts:
+
+```bash
+# Build and push the production image
+./build-and-push.sh
+
+# Or, if you already have a built image:
+./push-to-dockerhub.sh
+```
+
+These scripts will handle the build process, test the image, and push it to Docker Hub.
 
 ### With WeChat Configuration
 ```bash

@@ -2,7 +2,12 @@ version: '3.8'
 
 services:
   md2any:
-    build: .
+    build: 
+      context: .
+      dockerfile: Dockerfile
+      platforms:
+        - linux/amd64
+        - linux/arm64
     ports:
       - "5002:5002"
     volumes:
