@@ -403,24 +403,94 @@ $x = {-b \pm \sqrt{b^2-4ac} \over 2a}$
             showLoading();
             updateStatus('正在生成PNG...');
 
-            // Use html2canvas on the preview pane
-            html2canvas(previewPane, {
-                useCORS: true, // To handle cross-origin images if any
-            }).then(canvas => {
-                const a = document.createElement('a');
-                a.href = canvas.toDataURL('image/png');
-                a.download = `markdown-${theme.replace('.css', '')}-${Date.now()}.png`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                hideLoading();
-                updateStatus('PNG生成完成');
-            }).catch(error => {
-                console.error('PNG生成失败:', error);
-                alert('PNG生成失败: ' + error.message);
-                hideLoading();
-                updateStatus('PNG生成失败', true);
-            });
+            // Check if we have an iframe in the preview
+            const iframe = previewPane.querySelector('iframe');
+            
+            if (iframe && iframe.contentDocument) {
+                // If we have an iframe, capture its content directly
+                html2canvas(iframe.contentDocument.body, {
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: '#ffffff',
+                    scale: 2,
+                    logging: false
+                }).then(canvas => {
+                    // Check if canvas is valid and has content
+                    const context = canvas.getContext('2d');
+                    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                    const data = imageData.data;
+                    
+                    // Check if all pixels are transparent/white (indicating blank image)
+                    let isBlank = true;
+                    for (let i = 0; i < data.length; i += 4) {
+                        // Check if pixel is not white/transparent
+                        if (data[i] !== 255 || data[i+1] !== 255 || data[i+2] !== 255 || data[i+3] !== 255) {
+                            isBlank = false;
+                            break;
+                        }
+                    }
+                    
+                    if (isBlank) {
+                        throw new Error('生成的图片为空白，请确保内容已正确渲染');
+                    }
+                    
+                    const a = document.createElement('a');
+                    a.href = canvas.toDataURL('image/png');
+                    a.download = `markdown-${theme.replace('.css', '')}-${Date.now()}.png`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    hideLoading();
+                    updateStatus('PNG生成完成');
+                }).catch(error => {
+                    console.error('PNG生成失败:', error);
+                    alert('PNG生成失败: ' + error.message);
+                    hideLoading();
+                    updateStatus('PNG生成失败', true);
+                });
+            } else {
+                // Fallback to capturing the entire preview pane
+                html2canvas(previewPane, {
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: '#ffffff',
+                    scale: 2,
+                    logging: false
+                }).then(canvas => {
+                    // Check if canvas is valid and has content
+                    const context = canvas.getContext('2d');
+                    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+                    const data = imageData.data;
+                    
+                    // Check if all pixels are transparent/white (indicating blank image)
+                    let isBlank = true;
+                    for (let i = 0; i < data.length; i += 4) {
+                        // Check if pixel is not white/transparent
+                        if (data[i] !== 255 || data[i+1] !== 255 || data[i+2] !== 255 || data[i+3] !== 255) {
+                            isBlank = false;
+                            break;
+                        }
+                    }
+                    
+                    if (isBlank) {
+                        throw new Error('生成的图片为空白，请确保内容已正确渲染');
+                    }
+                    
+                    const a = document.createElement('a');
+                    a.href = canvas.toDataURL('image/png');
+                    a.download = `markdown-${theme.replace('.css', '')}-${Date.now()}.png`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    hideLoading();
+                    updateStatus('PNG生成完成');
+                }).catch(error => {
+                    console.error('PNG生成失败:', error);
+                    alert('PNG生成失败: ' + error.message);
+                    hideLoading();
+                    updateStatus('PNG生成失败', true);
+                });
+            }
         }
 
         // 将Markdown转换为纯文本
