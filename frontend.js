@@ -12,6 +12,10 @@
         const charCount = document.getElementById('char-count');
         const loading = document.getElementById('loading');
         const clearEditorBtn = document.getElementById('clear-editor');
+        const themeOptions = document.querySelectorAll('.theme-option');
+        const settingsPane = document.getElementById('settings-pane');
+        const settingsToggle = document.getElementById('settings-toggle');
+        const settingsClose = document.getElementById('settings-close');
 
         // 防抖函数
         let debounceTimer;
@@ -512,6 +516,60 @@ $x = {-b \pm \sqrt{b^2-4ac} \over 2a}$
         if (clearEditorBtn) {
             clearEditorBtn.addEventListener('click', clearEditor);
         }
+        
+        // 为主题选项添加事件监听器
+        themeOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                // 移除所有选项的active类
+                themeOptions.forEach(opt => opt.classList.remove('active'));
+                // 为当前选项添加active类
+                option.classList.add('active');
+                
+                // 获取选中的主题
+                const selectedTheme = option.getAttribute('data-theme');
+                
+                // 根据选中的主题更新渲染
+                renderMarkdown();
+            });
+        });
+        
+        // 为设置抽屉添加事件监听器
+        if (settingsToggle) {
+            settingsToggle.addEventListener('click', () => {
+                settingsPane.classList.toggle('visible');
+                // 更新按钮文本
+                if (settingsPane.classList.contains('visible')) {
+                    settingsToggle.innerHTML = '<i class="fas fa-times"></i> 关闭设置';
+                } else {
+                    settingsToggle.innerHTML = '<i class="fas fa-cog"></i> 设置';
+                }
+                // 保存状态到localStorage
+                localStorage.setItem('settingsPaneVisible', settingsPane.classList.contains('visible'));
+            });
+        }
+        
+        if (settingsClose) {
+            settingsClose.addEventListener('click', () => {
+                settingsPane.classList.remove('visible');
+                // 恢复按钮文本
+                if (settingsToggle) {
+                    settingsToggle.innerHTML = '<i class="fas fa-cog"></i> 设置';
+                }
+                // 保存状态到localStorage
+                localStorage.setItem('settingsPaneVisible', false);
+            });
+        }
+        
+        // 页面加载时恢复设置面板状态
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedVisible = localStorage.getItem('settingsPaneVisible') === 'true';
+            if (savedVisible) {
+                settingsPane.classList.add('visible');
+                if (settingsToggle) {
+                    settingsToggle.innerHTML = '<i class="fas fa-times"></i> 关闭设置';
+                }
+            }
+        });
 
         // 初始化
         document.addEventListener('DOMContentLoaded', () => {

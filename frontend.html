@@ -51,12 +51,12 @@
         }
 
         .btn-primary {
-            background: #007acc;
+            background: #D86E4F;
             color: white;
         }
 
         .btn-primary:hover {
-            background: #005a9e;
+            background: #c05a3a;
         }
 
         .btn-secondary {
@@ -105,7 +105,7 @@
         }
 
         .dropdown .dropdown-toggle {
-            border-left: 1px solid #005a9e;
+            border-left: 1px solid #c05a3a;
             border-radius: 0 4px 4px 0;
             padding: 8px;
         }
@@ -146,7 +146,7 @@
 
         .spinner {
             border: 4px solid #f3f3f3;
-            border-top: 4px solid #007acc;
+            border-top: 4px solid #D86E4F;
             border-radius: 50%;
             width: 40px;
             height: 40px;
@@ -166,13 +166,40 @@
             overflow: hidden;
         }
 
-        .editor-pane, .preview-pane {
-            flex: 1;
+        .editor-pane, .preview-pane, .settings-pane {
             background: white;
             border-radius: 8px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             display: flex;
             flex-direction: column;
+        }
+
+        .editor-pane, .preview-pane {
+            flex: 1;
+        }
+
+        .settings-pane {
+            width: 250px;
+            margin-left: 20px;
+            transition: transform 0.3s ease;
+            transform: translateX(100%);
+        }
+        
+        .settings-pane.visible {
+            transform: translateX(0);
+        }
+        
+        .settings-pane .close-btn {
+            float: right;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #999;
+        }
+        
+        .settings-pane .close-btn:hover {
+            color: #333;
         }
 
         .pane-header {
@@ -197,6 +224,39 @@
             flex: 1;
             padding: 20px;
             overflow-y: auto;
+        }
+
+        .settings-content {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .setting-group {
+            margin-bottom: 20px;
+        }
+
+        .setting-group h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .theme-option {
+            padding: 10px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .theme-option:hover {
+            background: #f0f0f0;
+        }
+
+        .theme-option.active {
+            border-color: #D86E4F;
+            background: #fff5f0;
         }
 
         .section-card {
@@ -228,8 +288,11 @@
                 flex-direction: column;
             }
             
-            .editor-pane, .preview-pane {
+            .editor-pane, .preview-pane, .settings-pane {
                 min-height: 300px;
+                width: 100%;
+                margin-left: 0;
+                margin-top: 20px;
             }
         }
     </style>
@@ -249,6 +312,9 @@
             </select>
             <button class="btn btn-secondary" onclick="loadSample()">
                 <i class="fas fa-file-code"></i> 示例
+            </button>
+            <button class="btn btn-secondary" id="settings-toggle">
+                <i class="fas fa-cog"></i> 设置
             </button>
             <div class="dropdown">
                 <button class="btn btn-primary">
@@ -292,6 +358,42 @@
                 <div style="text-align: center; color: #999; margin-top: 50px;">
                     <i class="fas fa-arrow-left" style="font-size: 48px; margin-bottom: 20px; opacity: 0.3;"></i>
                     <p>在左侧编辑器输入内容，右侧将实时预览</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-pane" id="settings-pane">
+            <div class="pane-header">
+                <i class="fas fa-cog"></i> 编辑器设置
+                <button class="close-btn" id="settings-close">×</button>
+            </div>
+            <div class="settings-content">
+                <div class="setting-group">
+                    <h3>主题风格</h3>
+                    <div class="theme-option active" data-theme="default">
+                        <strong>默认主题</strong>
+                        <div>经典·温暖</div>
+                    </div>
+                    <div class="theme-option" data-theme="tech">
+                        <strong>字节范</strong>
+                        <div>科技·现代</div>
+                    </div>
+                    <div class="theme-option" data-theme="apple">
+                        <strong>苹果范</strong>
+                        <div>视觉·渐变</div>
+                    </div>
+                    <div class="theme-option" data-theme="sport">
+                        <strong>运动风</strong>
+                        <div>活力·动感·小米YU7</div>
+                    </div>
+                    <div class="theme-option" data-theme="chinese">
+                        <strong>中国风</strong>
+                        <div>古典·雅致</div>
+                    </div>
+                    <div class="theme-option" data-theme="cyberpunk">
+                        <strong>赛博朋克</strong>
+                        <div>未来·科技感</div>
+                    </div>
                 </div>
             </div>
         </div>
