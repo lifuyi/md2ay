@@ -540,8 +540,12 @@ $x = {-b \pm \sqrt{b^2-4ac} \over 2a}$
                 // 更新按钮文本
                 if (settingsPane.classList.contains('visible')) {
                     settingsToggle.innerHTML = '<i class="fas fa-times"></i> 关闭设置';
+                    // 三列布局
+                    document.querySelector('.container').classList.remove('two-column');
                 } else {
                     settingsToggle.innerHTML = '<i class="fas fa-cog"></i> 设置';
+                    // 两列布局
+                    document.querySelector('.container').classList.add('two-column');
                 }
                 // 保存状态到localStorage
                 localStorage.setItem('settingsPaneVisible', settingsPane.classList.contains('visible'));
@@ -555,6 +559,8 @@ $x = {-b \pm \sqrt{b^2-4ac} \over 2a}$
                 if (settingsToggle) {
                     settingsToggle.innerHTML = '<i class="fas fa-cog"></i> 设置';
                 }
+                // 两列布局
+                document.querySelector('.container').classList.add('two-column');
                 // 保存状态到localStorage
                 localStorage.setItem('settingsPaneVisible', false);
             });
@@ -568,6 +574,11 @@ $x = {-b \pm \sqrt{b^2-4ac} \over 2a}$
                 if (settingsToggle) {
                     settingsToggle.innerHTML = '<i class="fas fa-times"></i> 关闭设置';
                 }
+                // 三列布局
+                document.querySelector('.container').classList.remove('two-column');
+            } else {
+                // 两列布局
+                document.querySelector('.container').classList.add('two-column');
             }
         });
 
