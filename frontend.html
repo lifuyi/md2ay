@@ -297,6 +297,62 @@
                 margin-top: 20px;
             }
         }
+        
+        /* Custom CSS Editor Floating Panel */
+        .floating-panel {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            width: 90%;
+            max-width: 1000px;
+            height: 80vh;
+            z-index: 1000;
+            flex-direction: column;
+        }
+        
+        .panel-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            font-weight: bold;
+            color: #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 8px 8px 0 0;
+            background: #f8f9fa;
+        }
+        
+        .panel-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        #custom-css-editor {
+            width: 100%;
+            height: 100%;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: none;
+        }
+        
+        .panel-footer {
+            padding: 15px 20px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            border-radius: 0 0 8px 8px;
+            background: #f8f9fa;
+        }
     </style>
 </head>
 <body>
@@ -372,29 +428,28 @@
             <div class="settings-content">
                 <div class="setting-group">
                     <h3>主题风格</h3>
-                    <div class="theme-option active" data-theme="default">
-                        <strong>默认主题</strong>
-                        <div>经典·温暖</div>
+                    <div class="theme-option" data-theme="chinese_news_colorful.css">
+                        <strong>现代多彩</strong>
+                        <div>多彩·现代</div>
                     </div>
-                    <div class="theme-option" data-theme="tech">
-                        <strong>字节范</strong>
-                        <div>科技·现代</div>
-                    </div>
-                    <div class="theme-option" data-theme="apple">
-                        <strong>苹果范</strong>
+                    <div class="theme-option" data-theme="apple.css">
+                        <strong>Apple</strong>
                         <div>视觉·渐变</div>
                     </div>
-                    <div class="theme-option" data-theme="sport">
-                        <strong>运动风</strong>
-                        <div>活力·动感·小米YU7</div>
+                    <div class="theme-option" data-theme="cyberpunk.css">
+                        <strong>Cyberpunk</strong>
+                        <div>未来·科技感</div>
                     </div>
-                    <div class="theme-option" data-theme="chinese">
+                    <div class="theme-option" data-theme="chinese_news_extracted.css">
                         <strong>中国风</strong>
                         <div>古典·雅致</div>
                     </div>
-                    <div class="theme-option" data-theme="cyberpunk">
-                        <strong>赛博朋克</strong>
-                        <div>未来·科技感</div>
+                    <div class="theme-option" data-theme="custom">
+                        <strong>自定义</strong>
+                        <div>自定义样式</div>
+                        <button id="edit-custom-css" class="btn btn-secondary" style="margin-top: 10px;">
+                            <i class="fas fa-edit"></i> 编辑CSS
+                        </button>
                     </div>
                 </div>
             </div>
@@ -408,6 +463,21 @@
 
     <div class="loading" id="loading">
         <div class="spinner"></div>
+    </div>
+
+    <!-- Custom CSS Editor Floating Panel -->
+    <div class="floating-panel" id="css-floating-panel">
+        <div class="panel-header">
+            <span>编辑自定义CSS</span>
+            <button class="close-btn" id="close-css-panel">×</button>
+        </div>
+        <div class="panel-content">
+            <textarea id="custom-css-editor" placeholder="在此输入您的自定义CSS..."></textarea>
+        </div>
+        <div class="panel-footer">
+            <button class="btn btn-secondary" id="cancel-css-edit">取消</button>
+            <button class="btn btn-primary" id="save-css-edit">保存</button>
+        </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>

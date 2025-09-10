@@ -16,6 +16,14 @@
         const settingsPane = document.getElementById('settings-pane');
         const settingsToggle = document.getElementById('settings-toggle');
         const settingsClose = document.getElementById('settings-close');
+        
+        // Custom CSS Editor Elements
+        const editCustomCSSBtn = document.getElementById('edit-custom-css');
+        const cssFloatingPanel = document.getElementById('css-floating-panel');
+        const closeCssPanel = document.getElementById('close-css-panel');
+        const cancelCssEdit = document.getElementById('cancel-css-edit');
+        const saveCssEdit = document.getElementById('save-css-edit');
+        const customCssEditor = document.getElementById('custom-css-editor');
 
         // 防抖函数
         let debounceTimer;
@@ -96,7 +104,9 @@
                 iframe.style.border = 'none';
                 iframe.style.background = 'white';
                 iframe.style.borderRadius = '4px';
-                iframe.sandbox = 'allow-scripts allow-same-origin'; // Add sandbox for security
+                // Fix sandboxing warning by removing allow-same-origin when allow-scripts is present
+                // But we need to add allow-same-origin back for proper rendering of content with CSS
+                iframe.sandbox = 'allow-scripts allow-same-origin';
                 
                 // 添加到预览区域
                 preview.appendChild(iframe);
@@ -603,6 +613,23 @@ $x = {-b \pm \sqrt{b^2-4ac} \over 2a}$
             });
         });
         
+        // Custom CSS Editor Event Listeners
+        if (editCustomCSSBtn) {
+            editCustomCSSBtn.addEventListener('click', openCustomCSSEditor);
+        }
+        
+        if (closeCssPanel) {
+            closeCssPanel.addEventListener('click', closeCustomCSSEditor);
+        }
+        
+        if (cancelCssEdit) {
+            cancelCssEdit.addEventListener('click', closeCustomCSSEditor);
+        }
+        
+        if (saveCssEdit) {
+            saveCssEdit.addEventListener('click', saveCustomCSS);
+        }
+        
         // 为设置抽屉添加事件监听器
         if (settingsToggle) {
             settingsToggle.addEventListener('click', () => {
@@ -649,6 +676,8 @@ $x = {-b \pm \sqrt{b^2-4ac} \over 2a}$
             } else {
                 // 两列布局
                 document.querySelector('.container').classList.add('two-column');
+                // Ensure settings pane is hidden
+                settingsPane.classList.remove('visible');
             }
         });
 
@@ -872,6 +901,67 @@ $x = {-b \pm \sqrt{b^2-4ac} \over 2a}$
             editor.value = '';
             updateCharCount();
             renderMarkdown();
+        }
+        
+        // Custom CSS Editor Functions
+        function openCustomCSSEditor() {
+            // Load current custom CSS content
+            fetch(`${API_BASE_URL}/themes/custom.css`)
+                .then(response => {
+                    if (response.ok) {
+                        return response.text();
+                    } else {
+                        // If file doesn't exist, start with empty content
+                        return '';
+                    }
+                })
+                .then(cssContent => {
+                    customCssEditor.value = cssContent;
+                    cssFloatingPanel.style.display = 'flex';
+                    // Focus the editor and move cursor to end
+                    customCssEditor.focus();
+                    customCssEditor.selectionStart = customCssEditor.value.length;
+                })
+                .catch(error => {
+                    console.error('Error loading custom CSS:', error);
+                    customCssEditor.value = '';
+                    cssFloatingPanel.style.display = 'flex';
+                    // Focus the editor even if there's an error
+                    customCssEditor.focus();
+                });
+        }
+        
+        function closeCustomCSSEditor() {
+            cssFloatingPanel.style.display = 'none';
+        }
+        
+        function saveCustomCSS() {
+            const cssContent = customCssEditor.value;
+            
+            // Save CSS content to server
+            fetch(`${API_BASE_URL}/themes/custom.css`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'text/css',
+                },
+                body: cssContent
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('自定义CSS已保存');
+                    closeCustomCSSEditor();
+                    // Update theme selector to use custom.css
+                    themeSelector.value = 'custom.css';
+                    // Re-render preview to apply new CSS
+                    renderMarkdown();
+                } else {
+                    throw new Error('保存失败');
+                }
+            })
+            .catch(error => {
+                console.error('Error saving custom CSS:', error);
+                alert('保存自定义CSS失败: ' + error.message);
+            });
         }
 
         // 键盘快捷键

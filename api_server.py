@@ -65,9 +65,43 @@ def refresh_styles():
         }), 500
 
 
-@app.route('/styles/<path:path>')
+@app.route('/themes/<path:path>')
 def send_styles(path):
     return send_from_directory('./themes', path)
+
+
+@app.route('/themes/<path:filename>', methods=['GET', 'POST'])
+def handle_custom_css(filename):
+    custom_css_path = os.path.join('./themes', filename)
+    
+    # Ensure we're only dealing with CSS files
+    if not filename.endswith('.css'):
+        return jsonify({'error': 'Only CSS files are allowed'}), 400
+    
+    # Security check to prevent path traversal
+    if '..' in filename:
+        return jsonify({'error': 'Invalid file path'}), 400
+    
+    if request.method == 'GET':
+        # Return the CSS file content
+        try:
+            with open(custom_css_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+            return content, 200, {'Content-Type': 'text/css'}
+        except FileNotFoundError:
+            return '', 200  # Return empty content if file doesn't exist
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
+    
+    elif request.method == 'POST':
+        # Save the CSS file content
+        try:
+            css_content = request.get_data(as_text=True)
+            with open(custom_css_path, 'w', encoding='utf-8') as f:
+                f.write(css_content)
+            return jsonify({'message': 'CSS file saved successfully'}), 200
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
 
 
 @app.route('/render', methods=['POST'])
