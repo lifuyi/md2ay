@@ -23,6 +23,7 @@
         const closeCssPanel = document.getElementById('close-css-panel');
         const cancelCssEdit = document.getElementById('cancel-css-edit');
         const saveCssEdit = document.getElementById('save-css-edit');
+        const cssExampleBtn = document.getElementById('css-example-btn');
         const customCssEditor = document.getElementById('custom-css-editor');
 
         // 防抖函数
@@ -208,6 +209,10 @@
                     </html>
                 `;
 
+                // 清除之前的iframe内容以防止嵌套
+                preview.innerHTML = '';
+                preview.appendChild(iframe);
+                
                 iframe.srcdoc = fullHtml;
 
                 iframe.onload = () => {
@@ -608,10 +613,30 @@ $x = {-b \pm \sqrt{b^2-4ac} \over 2a}$
                 // 获取选中的主题
                 const selectedTheme = option.getAttribute('data-theme');
                 
+                // 更新主题选择器的值
+                themeSelector.value = selectedTheme;
+                
                 // 根据选中的主题更新渲染
-                renderMarkdown();
+                // 添加延迟以确保CSS文件更新完成
+                setTimeout(() => {
+                    renderMarkdown();
+                }, 50);
             });
         });
+        
+        // 确保在页面加载时正确设置活动主题选项
+        function updateActiveThemeOption() {
+            const currentTheme = themeSelector.value;
+            themeOptions.forEach(option => {
+                option.classList.remove('active');
+                if (option.getAttribute('data-theme') === currentTheme) {
+                    option.classList.add('active');
+                }
+            });
+        }
+        
+        // 监听主题选择器变化
+        themeSelector.addEventListener('change', updateActiveThemeOption);
         
         // Custom CSS Editor Event Listeners
         if (editCustomCSSBtn) {
@@ -628,6 +653,10 @@ $x = {-b \pm \sqrt{b^2-4ac} \over 2a}$
         
         if (saveCssEdit) {
             saveCssEdit.addEventListener('click', saveCustomCSS);
+        }
+        
+        if (cssExampleBtn) {
+            cssExampleBtn.addEventListener('click', loadCSSExample);
         }
         
         // 为设置抽屉添加事件监听器
@@ -665,19 +694,15 @@ $x = {-b \pm \sqrt{b^2-4ac} \over 2a}$
         
         // 页面加载时恢复设置面板状态
         document.addEventListener('DOMContentLoaded', () => {
-            const savedVisible = localStorage.getItem('settingsPaneVisible') === 'true';
-            if (savedVisible) {
-                settingsPane.classList.add('visible');
-                if (settingsToggle) {
-                    settingsToggle.innerHTML = '<i class="fas fa-times"></i> 关闭设置';
-                }
-                // 三列布局
-                document.querySelector('.container').classList.remove('two-column');
-            } else {
-                // 两列布局
-                document.querySelector('.container').classList.add('two-column');
-                // Ensure settings pane is hidden
-                settingsPane.classList.remove('visible');
+            // Always start with the settings panel collapsed
+            // 两列布局
+            document.querySelector('.container').classList.add('two-column');
+            // Ensure settings pane is hidden
+            settingsPane.classList.remove('visible');
+            
+            // Reset button text to default
+            if (settingsToggle) {
+                settingsToggle.innerHTML = '<i class="fas fa-cog"></i> 设置';
             }
         });
 
@@ -948,20 +973,74 @@ $x = {-b \pm \sqrt{b^2-4ac} \over 2a}$
             })
             .then(response => {
                 if (response.ok) {
-                    alert('自定义CSS已保存');
                     closeCustomCSSEditor();
                     // Update theme selector to use custom.css
                     themeSelector.value = 'custom.css';
-                    // Re-render preview to apply new CSS
-                    renderMarkdown();
+                    // Update active theme option
+                    themeOptions.forEach(opt => opt.classList.remove('active'));
+                    const customThemeOption = document.querySelector('.theme-option[data-theme="custom"]');
+                    if (customThemeOption) {
+                        customThemeOption.classList.add('active');
+                    }
+                    // Add a small delay to ensure file is written before re-rendering
+                    setTimeout(() => {
+                        // Re-render preview to apply new CSS
+                        renderMarkdown();
+                    }, 100);
                 } else {
                     throw new Error('保存失败');
+                    // Show error message only on failure
+                    alert('保存自定义CSS失败');
                 }
             })
             .catch(error => {
                 console.error('Error saving custom CSS:', error);
                 alert('保存自定义CSS失败: ' + error.message);
             });
+        }
+        
+        // Load CSS example into editor
+        function loadCSSExample() {
+            const cssExample = `/* 自定义CSS示例 */
+.markdown-body {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+h1, h2, h3 {
+    color: #2c3e50;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 5px;
+}
+
+blockquote {
+    background: #e8f4f8;
+    border-left: 4px solid #3498db;
+    padding: 10px 20px;
+    margin: 10px 0;
+    border-radius: 0 4px 4px 0;
+}
+
+code {
+    background: #eee;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'Consolas', monospace;
+}
+
+pre {
+    background: #2c3e50;
+    color: #fff;
+    padding: 15px;
+    border-radius: 5px;
+    overflow-x: auto;
+}`;
+            
+            if (confirm('确定要加载CSS示例吗？这将覆盖当前编辑的内容。')) {
+                customCssEditor.value = cssExample;
+            }
         }
 
         // 键盘快捷键
