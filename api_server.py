@@ -268,7 +268,7 @@ def send_markdown_to_wechat_draft():
             'style': style
         }
         
-        logger.info(f"building txt is: {markdown_content}")
+        # logger.info(f"building txt is: {markdown_content}")
         # 如果需要处理dash separator，在这里预处理
         if dash_separator:
             logger.info("Processing dash separator mode")
@@ -336,6 +336,8 @@ def send_markdown_to_wechat_draft():
     # 处理Unicode编码问题
     encoded_title = title.encode('utf-8').decode('latin-1') if isinstance(title, str) else title
     encoded_content = wrapped_content.encode('utf-8').decode('latin-1') if isinstance(wrapped_content, str) else wrapped_content
+    # encoded_content = encoded_content.replace(' ', '')
+    encoded_content = encoded_content.replace(' ', ' ') 
     
     article = {
         'title': encoded_title,
@@ -358,11 +360,7 @@ def send_markdown_to_wechat_draft():
     
     try:
         logger.info(f"Sending request to WeChat API: {draft_url}")
-        if encoded_content == wrapped_content: 
-            logger.info("encode and wrapped_content true")
-        else: 
-            logger.info("changed")
-        logger.info(f"Request data: {articles}") #this line is changed
+        # logger.info(f"Request data: {articles}") #this line is changed
         draft_response = requests.post(draft_url, json=articles, timeout=10)
         logger.info(f"WeChat API response status: {draft_response.status_code}")
         result = draft_response.json()
