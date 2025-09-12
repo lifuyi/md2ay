@@ -669,7 +669,7 @@ $x = {-b \pm \sqrt{b^2-4ac} \over 2a}$
                     // 三列布局
                     document.querySelector('.container').classList.remove('two-column');
                 } else {
-                    settingsToggle.innerHTML = '<i class="fas fa-cog"></i> 设置';
+                    settingsToggle.innerHTML = '<i class="fas fa-cog"></i> 设置面板';
                     // 两列布局
                     document.querySelector('.container').classList.add('two-column');
                 }
@@ -683,7 +683,7 @@ $x = {-b \pm \sqrt{b^2-4ac} \over 2a}$
                 settingsPane.classList.remove('visible');
                 // 恢复按钮文本
                 if (settingsToggle) {
-                    settingsToggle.innerHTML = '<i class="fas fa-cog"></i> 设置';
+                    settingsToggle.innerHTML = '<i class="fas fa-cog"></i> 设置面板';
                 }
                 // 两列布局
                 document.querySelector('.container').classList.add('two-column');
@@ -702,7 +702,7 @@ $x = {-b \pm \sqrt{b^2-4ac} \over 2a}$
             
             // Reset button text to default
             if (settingsToggle) {
-                settingsToggle.innerHTML = '<i class="fas fa-cog"></i> 设置';
+                settingsToggle.innerHTML = '<i class="fas fa-cog"></i> 设置面板';
             }
         });
 

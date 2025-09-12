@@ -4,6 +4,7 @@
     padding: 20px;
     border-radius: 8px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #fff9e6 0%, #fff5e6 100%);
 }
 
 h1, h2, h3 {

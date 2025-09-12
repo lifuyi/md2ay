@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Markdown编辑器 - 前后端整合版</title>
+    <title>Markdown编辑器</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/brands.min.css">
     <style>
@@ -33,6 +33,14 @@
         .header-left h1 {
             font-size: 18px;
             color: #333;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-left h1::before {
+            content: "🍂";
+            font-size: 20px;
         }
 
         .header-right {
@@ -358,7 +366,7 @@
 <body>
     <header>
         <div class="header-left">
-            <h1>Markdown编辑器 - 前后端整合版</h1>
+            <h1>Markdown编辑器</h1>
         </div>
         <div class="header-right">
             <div class="checkbox-container">
@@ -372,7 +380,7 @@
                 <i class="fas fa-file-code"></i> 示例
             </button>
             <button class="btn btn-secondary" id="settings-toggle">
-                <i class="fas fa-cog"></i> 设置
+                <i class="fas fa-cog"></i> 设置面板
             </button>
             <div class="dropdown">
                 <button class="btn btn-primary">
