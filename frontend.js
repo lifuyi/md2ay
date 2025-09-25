@@ -586,6 +586,123 @@ $x = {-b \pm \sqrt{b^2-4ac} \over 2a}$
             URL.revokeObjectURL(url);
         }
 
+        // 复制渲染后的HTML到剪贴板
+        function copyToClipboard() {
+            // 获取预览区域的内容
+            const previewPane = document.getElementById('preview');
+            
+            if (!previewPane.innerHTML || previewPane.innerHTML.trim() === '') {
+                alert('请先渲染内容');
+                return;
+            }
+
+            showLoading();
+            updateStatus('正在复制到剪贴板...');
+
+            try {
+                // 检查是否有iframe内容
+                const iframe = previewPane.querySelector('iframe');
+                
+                if (iframe && iframe.contentDocument) {
+                    // 获取iframe中的HTML内容
+                    const iframeDoc = iframe.contentDocument;
+                    const content = iframeDoc.querySelector('.markdown-body') || iframeDoc.body;
+                    
+                    if (content) {
+                        // 获取完整的HTML内容
+                        const htmlContent = content.innerHTML;
+                        
+                        // 创建临时div来处理HTML内容
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = htmlContent;
+                        
+                        // 复制HTML到剪贴板
+                        copyHTMLToClipboard(tempDiv.innerHTML);
+                    } else {
+                        throw new Error('无法获取内容');
+                    }
+                } else {
+                    // 如果没有iframe，直接复制预览区域的内容
+                    copyHTMLToClipboard(previewPane.innerHTML);
+                }
+            } catch (error) {
+                console.error('复制失败:', error);
+                alert('复制失败: ' + error.message);
+                hideLoading();
+                updateStatus('复制失败', true);
+            }
+        }
+
+        // 将HTML内容复制到剪贴板
+        function copyHTMLToClipboard(htmlContent) {
+            // 创建临时div来处理HTML内容
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = htmlContent;
+            
+            // 移除可能的script标签以确保安全
+            const scripts = tempDiv.querySelectorAll('script');
+            scripts.forEach(script => script.remove());
+            
+            // 获取清理后的HTML内容
+            const cleanHTML = tempDiv.innerHTML;
+            
+            // 使用Clipboard API复制HTML内容
+            if (navigator.clipboard && window.ClipboardItem) {
+                // 现代浏览器支持Clipboard API
+                const blob = new Blob([cleanHTML], { type: 'text/html' });
+                const data = [new ClipboardItem({ 'text/html': blob })];
+                
+                navigator.clipboard.write(data)
+                    .then(() => {
+                        hideLoading();
+                        updateStatus('已复制到剪贴板');
+                        alert('已复制到剪贴板');
+                    })
+                    .catch(err => {
+                        console.error('Clipboard API 失败:', err);
+                        // 降级到传统方法
+                        fallbackCopyTextToClipboard(cleanHTML);
+                    });
+            } else {
+                // 降级到传统方法
+                fallbackCopyTextToClipboard(cleanHTML);
+            }
+        }
+
+        // 降级复制方法
+        function fallbackCopyTextToClipboard(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            
+            // 避免滚动到底部
+            textArea.style.top = '0';
+            textArea.style.left = '0';
+            textArea.style.position = 'fixed';
+            textArea.style.opacity = '0';
+            
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    hideLoading();
+                    updateStatus('已复制到剪贴板');
+                    alert('已复制到剪贴板');
+                } else {
+                    throw new Error('复制命令失败');
+                }
+            } catch (err) {
+                console.error('复制失败:', err);
+                alert('复制失败: ' + err.message);
+                hideLoading();
+                updateStatus('复制失败', true);
+            }
+            
+            document.body.removeChild(textArea);
+        }
+
         // 事件监听
         editor.addEventListener('input', debounce(() => {
             updateCharCount();
