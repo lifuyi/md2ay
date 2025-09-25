@@ -105,11 +105,10 @@
                 iframe.style.border = 'none';
                 iframe.style.background = 'white';
                 iframe.style.borderRadius = '4px';
-                // Configure iframe sandbox to avoid security warnings
-                // We need allow-same-origin for CSS to work properly with styles
-                // The security warning is about potential sandbox escape, but this is acceptable
-                // for our use case since we control the content being rendered
-                iframe.sandbox = 'allow-same-origin';
+                // Configure iframe sandbox for MathJax to work properly
+                // Both allow-scripts and allow-same-origin are needed for MathJax
+                // This creates a security warning but is necessary for math rendering
+                iframe.sandbox = 'allow-scripts allow-same-origin';
                 
                 // 添加到预览区域
                 preview.appendChild(iframe);
@@ -191,8 +190,8 @@
                                     inlineMath: [['$', '$'], ['\\(', '\\)']],
                                     displayMath: [['$$', '$$'], ['\\[', '\\]']]
                                 },
-                                svg: {
-                                    fontCache: 'global'
+                                chtml: {
+                                    fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2'
                                 }
                             };
                         </script>
@@ -203,9 +202,27 @@
                         <script>
                             mermaid.initialize({ startOnLoad: true });
                             mermaid.run();
-                            if (window.MathJax) {
-                                window.MathJax.typesetPromise();
+                            
+                            // Prevent multiple typesetting operations
+                            let isTypesetting = false;
+                            
+                            // Wait for MathJax to load and then process all equations ONCE
+                            function waitForMathJaxAndTypeset() {
+                                if (window.MathJax && window.MathJax.typesetPromise && !isTypesetting) {
+                                    isTypesetting = true;
+                                    MathJax.typesetPromise().then(() => {
+                                        console.log('MathJax initial typesetting complete');
+                                        isTypesetting = false;
+                                    }).catch(err => {
+                                        console.error('MathJax typesetting error:', err);
+                                        isTypesetting = false;
+                                    });
+                                } else if (!window.MathJax || !window.MathJax.typesetPromise) {
+                                    // If MathJax isn't ready yet, wait and try again
+                                    setTimeout(waitForMathJaxAndTypeset, 100);
+                                }
                             }
+                            waitForMathJaxAndTypeset();
                         </script>
                     </body>
                     </html>
@@ -424,13 +441,123 @@ $x = {-b \pm \sqrt{b^2-4ac} \over 2a}$
             const iframe = previewPane.querySelector('iframe');
             
             if (iframe && iframe.contentDocument) {
-                // If we have an iframe, capture its content directly
-                html2canvas(iframe.contentDocument.body, {
+                // Fixed MathJax handling for PNG export - less aggressive approach
+                const waitForMathJax = async () => {
+                    const iframeWindow = iframe.contentWindow;
+                    const iframeDoc = iframe.contentDocument;
+                    
+                    if (iframeWindow.MathJax) {
+                        try {
+                            // Wait for MathJax to finish any pending typesetting
+                            await iframeWindow.MathJax.typesetPromise();
+                            updateStatus('数学公式渲染完成，准备生成PNG...');
+                            
+                            // Give it time to fully render
+                            await new Promise(resolve => setTimeout(resolve, 1000));
+                            
+                            // Only clean up obvious duplicates without removing all equations
+                            const mathElements = iframeDoc.querySelectorAll('mjx-container');
+                            if (mathElements.length > 0) {
+                                console.log(`Found ${mathElements.length} MathJax elements for PNG export`);
+                                
+                                // Light cleanup - only remove elements that are clearly duplicates
+                                const seenContent = new Map();
+                                mathElements.forEach((el, index) => {
+                                    const content = el.textContent?.trim() || '';
+                                    const rect = el.getBoundingClientRect();
+                                    
+                                    if (content && rect.width > 0 && rect.height > 0) {
+                                        const key = `${content.substring(0, 50)}-${Math.round(rect.top/20)*20}`;
+                                        
+                                        if (seenContent.has(key)) {
+                                            const existing = seenContent.get(key);
+                                            const existingRect = existing.getBoundingClientRect();
+                                            
+                                            // Only remove if positions are very close (likely duplicate)
+                                            if (Math.abs(rect.top - existingRect.top) < 10 && 
+                                                Math.abs(rect.left - existingRect.left) < 10) {
+                                                console.log(`Removing likely duplicate at index ${index}`);
+                                                el.remove();
+                                                return;
+                                            }
+                                        }
+                                        
+                                        seenContent.set(key, el);
+                                        
+                                        // Ensure visibility without aggressive style resets
+                                        if (el.style.visibility === 'hidden') {
+                                            el.style.visibility = 'visible';
+                                        }
+                                    }
+                                });
+                            }
+                            
+                        } catch (error) {
+                            console.warn('MathJax processing warning:', error);
+                        }
+                    }
+                    
+                    // Short final wait
+                    return new Promise(resolve => setTimeout(resolve, 300));
+                };
+                
+                waitForMathJax().then(() => {
+                    // If we have an iframe, capture its content directly
+                    html2canvas(iframe.contentDocument.body, {
                     useCORS: true,
                     allowTaint: true,
                     backgroundColor: '#ffffff',
                     scale: 2,
-                    logging: false
+                    logging: false,
+                    ignoreElements: function(element) {
+                        // Only ignore clearly hidden elements
+                        return element.style.visibility === 'hidden' || 
+                               element.style.display === 'none';
+                    },
+                    onclone: function(clonedDoc) {
+                        // Gentle cleanup in clone - preserve equations but fix obvious duplicates
+                        console.log('Starting gentle MathJax cleanup in clone...');
+                        
+                        // Remove only legacy MathJax elements (old versions)
+                        const legacyElements = clonedDoc.querySelectorAll('.MathJax, .MathJax_Display');
+                        legacyElements.forEach(el => el.remove());
+                        
+                        // Handle mjx-container elements with careful deduplication
+                        const mathContainers = Array.from(clonedDoc.querySelectorAll('mjx-container'));
+                        const positions = new Map();
+                        
+                        mathContainers.forEach((container, index) => {
+                            const rect = container.getBoundingClientRect();
+                            const content = container.textContent?.trim() || '';
+                            
+                            // Only check for duplicates if we have valid content and dimensions
+                            if (content && rect.width > 0 && rect.height > 0) {
+                                const posKey = `${Math.round(rect.top/5)*5}-${Math.round(rect.left/5)*5}`;
+                                
+                                if (positions.has(posKey)) {
+                                    const existing = positions.get(posKey);
+                                    // Only remove if content is also very similar
+                                    if (content === existing.content) {
+                                        console.log(`Removing duplicate equation in clone: ${content.substring(0, 20)}...`);
+                                        container.remove();
+                                        return;
+                                    }
+                                }
+                                
+                                positions.set(posKey, { element: container, content: content });
+                                
+                                // Ensure visibility without destroying existing styles
+                                if (container.style.visibility === 'hidden') {
+                                    container.style.visibility = 'visible';
+                                }
+                                if (container.style.opacity === '0') {
+                                    container.style.opacity = '1';
+                                }
+                            }
+                        });
+                        
+                        console.log(`Clone cleanup complete. Processed ${mathContainers.length} containers.`);
+                    }
                 }).then(canvas => {
                     // Check if canvas is valid and has content
                     const context = canvas.getContext('2d');
@@ -459,9 +586,15 @@ $x = {-b \pm \sqrt{b^2-4ac} \over 2a}$
                     document.body.removeChild(a);
                     hideLoading();
                     updateStatus('PNG生成完成');
+                    }).catch(error => {
+                        console.error('PNG生成失败:', error);
+                        alert('PNG生成失败: ' + error.message);
+                        hideLoading();
+                        updateStatus('PNG生成失败', true);
+                    });
                 }).catch(error => {
-                    console.error('PNG生成失败:', error);
-                    alert('PNG生成失败: ' + error.message);
+                    console.error('MathJax等待失败:', error);
+                    alert('数学公式渲染失败: ' + error.message);
                     hideLoading();
                     updateStatus('PNG生成失败', true);
                 });
@@ -472,7 +605,24 @@ $x = {-b \pm \sqrt{b^2-4ac} \over 2a}$
                     allowTaint: true,
                     backgroundColor: '#ffffff',
                     scale: 2,
-                    logging: false
+                    logging: false,
+                    onclone: function(clonedDoc) {
+                        // Clean up duplicate MathJax elements in fallback clone
+                        const mathElements = clonedDoc.querySelectorAll('mjx-container');
+                        const processedPositions = new Set();
+                        
+                        mathElements.forEach((el, index) => {
+                            const position = `${el.offsetTop}-${el.offsetLeft}-${el.offsetWidth}-${el.offsetHeight}`;
+                            
+                            if (processedPositions.has(position)) {
+                                el.remove();
+                            } else {
+                                processedPositions.add(position);
+                                el.style.visibility = 'visible';
+                                el.style.display = 'inline-block';
+                            }
+                        });
+                    }
                 }).then(canvas => {
                     // Check if canvas is valid and has content
                     const context = canvas.getContext('2d');

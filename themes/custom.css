@@ -7,7 +7,7 @@
 }
 
 h1, h2, h3 {
-    color: #00ff00;
+    color: #00c200;
     border-bottom: 2px solid #3498db;
     padding-bottom: 5px;
 }
@@ -21,7 +21,7 @@ blockquote {
 }
 
 code {
-    background: #eee;
+    background: #eeefff;
     padding: 2px 6px;
     border-radius: 3px;
     font-family: 'Consolas', monospace;
