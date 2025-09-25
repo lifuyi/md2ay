@@ -105,9 +105,11 @@
                 iframe.style.border = 'none';
                 iframe.style.background = 'white';
                 iframe.style.borderRadius = '4px';
-                // Fix sandboxing warning by removing allow-same-origin when allow-scripts is present
-                // But we need to add allow-same-origin back for proper rendering of content with CSS
-                iframe.sandbox = 'allow-scripts allow-same-origin';
+                // Configure iframe sandbox to avoid security warnings
+                // We need allow-same-origin for CSS to work properly with styles
+                // The security warning is about potential sandbox escape, but this is acceptable
+                // for our use case since we control the content being rendered
+                iframe.sandbox = 'allow-same-origin';
                 
                 // 添加到预览区域
                 preview.appendChild(iframe);
@@ -982,10 +984,13 @@ $x = {-b \pm \sqrt{b^2-4ac} \over 2a}$
             const appSecret = localStorage.getItem('wechat_app_secret');
             const thumbMediaId = localStorage.getItem('wechat_thumb_media_id');
             
-            console.log('微信配置检查:');
-            console.log('AppID:', appId);
-            console.log('AppSecret:', appSecret);
-            console.log('ThumbMediaId:', thumbMediaId);
+            // Only log WeChat config in development mode
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                console.log('微信配置检查:');
+                console.log('AppID:', appId);
+                console.log('AppSecret:', appSecret ? '***' + appSecret.slice(-4) : null);
+                console.log('ThumbMediaId:', thumbMediaId);
+            }
             
             if (appId && appSecret) {
                 console.log('微信配置完整');
@@ -1089,13 +1094,19 @@ $x = {-b \pm \sqrt{b^2-4ac} \over 2a}$
                 body: cssContent
             })
             .then(response => {
-                if (response.ok) {
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.status === 'success') {
                     closeCustomCSSEditor();
                     // Update theme selector to use custom.css
                     themeSelector.value = 'custom.css';
                     // Update active theme option
                     themeOptions.forEach(opt => opt.classList.remove('active'));
-                    const customThemeOption = document.querySelector('.theme-option[data-theme="custom"]');
+                    const customThemeOption = document.querySelector('.theme-option[data-theme="custom.css"]');
                     if (customThemeOption) {
                         customThemeOption.classList.add('active');
                     }
@@ -1105,9 +1116,7 @@ $x = {-b \pm \sqrt{b^2-4ac} \over 2a}$
                         renderMarkdown();
                     }, 100);
                 } else {
-                    throw new Error('保存失败');
-                    // Show error message only on failure
-                    alert('保存自定义CSS失败');
+                    throw new Error(data.message || '保存失败');
                 }
             })
             .catch(error => {

@@ -19,6 +19,27 @@ app.config['JSON_AS_ASCII'] = False
 
 
 
+@app.route('/styles/<path:path>', methods=['GET', 'POST'])
+@app.route('/themes/<path:path>', methods=['GET', 'POST'])
+def handle_styles(path):
+    if request.method == 'POST':
+        # Handle saving CSS file
+        try:
+            # Security: Ensure path is a valid CSS filename and doesn't contain path traversal characters.
+            if '..' not in path and path.endswith('.css'):
+                css_content = request.get_data(as_text=True)
+                with open(f'./themes/{path}', 'w', encoding='utf-8') as f:
+                    f.write(css_content)
+                return jsonify({'status': 'success', 'message': 'CSS file saved successfully'}), 200
+            else:
+                return jsonify({'status': 'error', 'message': 'Invalid file path'}), 400
+        except Exception as e:
+            logger.error(f"Failed to save CSS file: {str(e)}")
+            return jsonify({'status': 'error', 'message': f'Failed to save CSS file: {str(e)}'}), 500
+    else:
+        # GET request - serve the CSS file
+        return send_from_directory('./themes', path)
+
 @app.route('/')
 def index():
     return send_from_directory('.', 'frontend.html')
@@ -63,11 +84,6 @@ def refresh_styles():
             'status': 'error',
             'message': f'Failed to refresh styles: {str(e)}'
         }), 500
-
-
-@app.route('/styles/<path:path>')
-def send_styles(path):
-    return send_from_directory('./themes', path)
 
 
 @app.route('/render', methods=['POST'])
