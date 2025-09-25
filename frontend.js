@@ -441,64 +441,83 @@ $x = {-b \pm \sqrt{b^2-4ac} \over 2a}$
             const iframe = previewPane.querySelector('iframe');
             
             if (iframe && iframe.contentDocument) {
-                // Fixed MathJax handling for PNG export - less aggressive approach
+                // Radical approach: Freeze MathJax state for PNG capture
                 const waitForMathJax = async () => {
                     const iframeWindow = iframe.contentWindow;
                     const iframeDoc = iframe.contentDocument;
                     
+                    updateStatus('准备PNG导出，冻结数学公式状态...');
+                    
+                    // Step 1: Disable MathJax completely to prevent any further rendering
                     if (iframeWindow.MathJax) {
-                        try {
-                            // Wait for MathJax to finish any pending typesetting
-                            await iframeWindow.MathJax.typesetPromise();
-                            updateStatus('数学公式渲染完成，准备生成PNG...');
-                            
-                            // Give it time to fully render
-                            await new Promise(resolve => setTimeout(resolve, 1000));
-                            
-                            // Only clean up obvious duplicates without removing all equations
-                            const mathElements = iframeDoc.querySelectorAll('mjx-container');
-                            if (mathElements.length > 0) {
-                                console.log(`Found ${mathElements.length} MathJax elements for PNG export`);
-                                
-                                // Light cleanup - only remove elements that are clearly duplicates
-                                const seenContent = new Map();
-                                mathElements.forEach((el, index) => {
-                                    const content = el.textContent?.trim() || '';
-                                    const rect = el.getBoundingClientRect();
-                                    
-                                    if (content && rect.width > 0 && rect.height > 0) {
-                                        const key = `${content.substring(0, 50)}-${Math.round(rect.top/20)*20}`;
-                                        
-                                        if (seenContent.has(key)) {
-                                            const existing = seenContent.get(key);
-                                            const existingRect = existing.getBoundingClientRect();
-                                            
-                                            // Only remove if positions are very close (likely duplicate)
-                                            if (Math.abs(rect.top - existingRect.top) < 10 && 
-                                                Math.abs(rect.left - existingRect.left) < 10) {
-                                                console.log(`Removing likely duplicate at index ${index}`);
-                                                el.remove();
-                                                return;
-                                            }
-                                        }
-                                        
-                                        seenContent.set(key, el);
-                                        
-                                        // Ensure visibility without aggressive style resets
-                                        if (el.style.visibility === 'hidden') {
-                                            el.style.visibility = 'visible';
-                                        }
-                                    }
-                                });
-                            }
-                            
-                        } catch (error) {
-                            console.warn('MathJax processing warning:', error);
-                        }
+                        // Backup the original MathJax object
+                        iframeWindow._originalMathJax = iframeWindow.MathJax;
+                        // Disable MathJax typesetting
+                        iframeWindow.MathJax = {
+                            typesetPromise: () => Promise.resolve(),
+                            typeset: () => {},
+                            typesetClear: () => {}
+                        };
                     }
                     
-                    // Short final wait
-                    return new Promise(resolve => setTimeout(resolve, 300));
+                    // Step 2: Clean up the DOM aggressively - remove ALL duplicates
+                    const allMathElements = iframeDoc.querySelectorAll('mjx-container');
+                    console.log(`Found ${allMathElements.length} total math elements`);
+                    
+                    // Track unique equations by their actual content
+                    const uniqueEquations = new Set();
+                    const keepElements = [];
+                    const removeElements = [];
+                    
+                    allMathElements.forEach((el, index) => {
+                        const content = el.textContent?.trim() || '';
+                        const rect = el.getBoundingClientRect();
+                        
+                        // Create a signature based on content and rough position
+                        const signature = `${content}_${Math.round(rect.top/30)*30}`;
+                        
+                        if (uniqueEquations.has(signature)) {
+                            removeElements.push({el, index, content: content.substring(0, 30)});
+                        } else {
+                            uniqueEquations.add(signature);
+                            keepElements.push({el, index, content: content.substring(0, 30)});
+                        }
+                    });
+                    
+                    console.log(`Keeping ${keepElements.length} unique equations, removing ${removeElements.length} duplicates`);
+                    
+                    // Remove all duplicates
+                    removeElements.forEach(item => {
+                        console.log(`Removing duplicate: ${item.content}...`);
+                        item.el.remove();
+                    });
+                    
+                    // Style the remaining elements properly
+                    keepElements.forEach(item => {
+                        const el = item.el;
+                        const rect = el.getBoundingClientRect();
+                        
+                        // Reset to clean state
+                        el.style.visibility = 'visible';
+                        el.style.opacity = '1';
+                        el.style.position = 'static';
+                        el.style.transform = 'none';
+                        
+                        // Determine if display math
+                        const isDisplay = el.getAttribute('display') === 'true' || 
+                                         rect.width > iframeDoc.body.clientWidth * 0.4;
+                        
+                        if (isDisplay) {
+                            el.style.display = 'block';
+                            el.style.margin = '1em auto';
+                            el.style.textAlign = 'center';
+                        } else {
+                            el.style.display = 'inline-block';
+                        }
+                    });
+                    
+                    updateStatus('数学公式清理完成，开始PNG生成...');
+                    return new Promise(resolve => setTimeout(resolve, 500));
                 };
                 
                 waitForMathJax().then(() => {
@@ -515,48 +534,24 @@ $x = {-b \pm \sqrt{b^2-4ac} \over 2a}$
                                element.style.display === 'none';
                     },
                     onclone: function(clonedDoc) {
-                        // Gentle cleanup in clone - preserve equations but fix obvious duplicates
-                        console.log('Starting gentle MathJax cleanup in clone...');
+                        // Minimal clone processing - just ensure visibility, no deduplication
+                        console.log('Minimal MathJax clone processing...');
                         
-                        // Remove only legacy MathJax elements (old versions)
+                        // Remove only clearly legacy elements
                         const legacyElements = clonedDoc.querySelectorAll('.MathJax, .MathJax_Display');
                         legacyElements.forEach(el => el.remove());
                         
-                        // Handle mjx-container elements with careful deduplication
-                        const mathContainers = Array.from(clonedDoc.querySelectorAll('mjx-container'));
-                        const positions = new Map();
-                        
-                        mathContainers.forEach((container, index) => {
-                            const rect = container.getBoundingClientRect();
-                            const content = container.textContent?.trim() || '';
+                        // Just ensure all math containers are visible - NO deduplication
+                        const mathContainers = clonedDoc.querySelectorAll('mjx-container');
+                        mathContainers.forEach(container => {
+                            // Only fix visibility issues
+                            container.style.visibility = 'visible';
+                            container.style.opacity = '1';
                             
-                            // Only check for duplicates if we have valid content and dimensions
-                            if (content && rect.width > 0 && rect.height > 0) {
-                                const posKey = `${Math.round(rect.top/5)*5}-${Math.round(rect.left/5)*5}`;
-                                
-                                if (positions.has(posKey)) {
-                                    const existing = positions.get(posKey);
-                                    // Only remove if content is also very similar
-                                    if (content === existing.content) {
-                                        console.log(`Removing duplicate equation in clone: ${content.substring(0, 20)}...`);
-                                        container.remove();
-                                        return;
-                                    }
-                                }
-                                
-                                positions.set(posKey, { element: container, content: content });
-                                
-                                // Ensure visibility without destroying existing styles
-                                if (container.style.visibility === 'hidden') {
-                                    container.style.visibility = 'visible';
-                                }
-                                if (container.style.opacity === '0') {
-                                    container.style.opacity = '1';
-                                }
-                            }
+                            // Don't modify display properties - keep as-is from original cleanup
                         });
                         
-                        console.log(`Clone cleanup complete. Processed ${mathContainers.length} containers.`);
+                        console.log(`Clone processing complete. Made ${mathContainers.length} containers visible.`);
                     }
                 }).then(canvas => {
                     // Check if canvas is valid and has content
@@ -597,6 +592,14 @@ $x = {-b \pm \sqrt{b^2-4ac} \over 2a}$
                     alert('数学公式渲染失败: ' + error.message);
                     hideLoading();
                     updateStatus('PNG生成失败', true);
+                }).finally(() => {
+                    // Restore original MathJax after PNG generation
+                    const iframeWindow = iframe.contentWindow;
+                    if (iframeWindow._originalMathJax) {
+                        iframeWindow.MathJax = iframeWindow._originalMathJax;
+                        delete iframeWindow._originalMathJax;
+                        console.log('MathJax functionality restored');
+                    }
                 });
             } else {
                 // Fallback to capturing the entire preview pane
