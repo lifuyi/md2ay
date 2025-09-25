@@ -65,92 +65,54 @@ def refresh_styles():
         }), 500
 
 
-@app.route('/themes/<path:path>')
+@app.route('/styles/<path:path>')
 def send_styles(path):
     return send_from_directory('./themes', path)
 
 
-@app.route('/themes/<path:filename>', methods=['GET', 'POST'])
-def handle_custom_css(filename):
-    custom_css_path = os.path.join('./themes', filename)
-    
-    # Ensure we're only dealing with CSS files
-    if not filename.endswith('.css'):
-        return jsonify({'error': 'Only CSS files are allowed'}), 400
-    
-    # Security check to prevent path traversal
-    if '..' in filename:
-        return jsonify({'error': 'Invalid file path'}), 400
-    
-    if request.method == 'GET':
-        # Return the CSS file content
-        try:
-            with open(custom_css_path, 'r', encoding='utf-8') as f:
-                content = f.read()
-            return content, 200, {'Content-Type': 'text/css'}
-        except FileNotFoundError:
-            return '', 200  # Return empty content if file doesn't exist
-        except Exception as e:
-            return jsonify({'error': str(e)}), 500
-    
-    elif request.method == 'POST':
-        # Save the CSS file content
-        try:
-            css_content = request.get_data(as_text=True)
-            with open(custom_css_path, 'w', encoding='utf-8') as f:
-                f.write(css_content)
-            return jsonify({'message': 'CSS file saved successfully'}), 200
-        except Exception as e:
-            return jsonify({'error': str(e)}), 500
-
-
 @app.route('/render', methods=['POST'])
 def render_markdown():
-    try:
-        data = request.get_json()
-        md_content = data.get('md', '')
-        style_name = data.get('style', 'default')
+    data = request.get_json()
+    md_content = data.get('md', '')
+    style_name = data.get('style', 'default')
 
-        # Convert Markdown to HTML
-        html_content = markdown.markdown(
-            md_content,
-            extensions=[
-                'fenced_code',
-                'tables',
-                'nl2br',
-                'pymdownx.superfences',
-                'pymdownx.magiclink'
-            ],
-            extension_configs={
-                'pymdownx.superfences': {
-                    'custom_fences': [
-                        {
-                            'name': 'mermaid',
-                            'class': 'mermaid',
-                            'format': lambda source, language, css_class, options, md, **kwargs: f'<div class="{css_class}">{source}</div>'
-                        }
-                    ]
-                }
+    # Convert Markdown to HTML
+    html_content = markdown.markdown(
+        md_content,
+        extensions=[
+            'fenced_code',
+            'tables',
+            'nl2br',
+            'pymdownx.superfences',
+            'pymdownx.magiclink'
+        ],
+        extension_configs={
+            'pymdownx.superfences': {
+                'custom_fences': [
+                    {
+                        'name': 'mermaid',
+                        'class': 'mermaid',
+                        'format': lambda source, language, css_class, options, md, **kwargs: f'<div class="{css_class}">{source}</div>'
+                    }
+                ]
             }
-        )
-        
-        # Process html_content to fix list formatting
-        html_content = html_content.replace('<ol>\n', '<ol>').replace('\n</ol>', '</ol>').replace('</li>\n', '</li>').replace('</h2>\n','</h2>')
+        }
+    )
 
-        # Load the selected stylesheet
-        custom_css = ''
-        try:
-            # Security: Ensure style_name is a valid filename and doesn't contain path traversal characters.
-            if '..' not in style_name and style_name.endswith('.css'):
-                with open(f'./themes/{style_name}', 'r', encoding='utf-8') as f:
-                    custom_css = f.read()
-        except FileNotFoundError:
-            # Handle case where style file doesn't exist
-            pass
-        
-        # 创建完整的HTML文档用于CSS内联
-        if custom_css:
-            full_html = f'''
+    # Load the selected stylesheet
+    custom_css = ''
+    try:
+        # Security: Ensure style_name is a valid filename and doesn't contain path traversal characters.
+        if '..' not in style_name and style_name.endswith('.css'):
+            with open(f'./themes/{style_name}', 'r', encoding='utf-8') as f:
+                custom_css = f.read()
+    except FileNotFoundError:
+        # Handle case where style file doesn't exist
+        pass
+    
+    # 创建完整的HTML文档用于CSS内联
+    if custom_css:
+        full_html = f'''
 <!DOCTYPE html>
 <html>
 <head>
@@ -164,27 +126,21 @@ def render_markdown():
 </div>
 </body>
 </html>'''
-            
-            # 执行CSS内联
-            inlined_html = inline(full_html)
-            
-            # 提取body中的内容并用<section>标签包裹
-            from bs4 import BeautifulSoup
-            soup = BeautifulSoup(inlined_html, 'html.parser')
-            body_content = soup.body.decode_contents()
-            # logger.info(f"body_content txt is: {body_content}") #check is right
-            wrapped_content = f'<section>{body_content}</section>'
-            
-            return wrapped_content, 200, {'Content-Type': 'text/html'}
-        else:
-            # 如果没有CSS，直接用<section>标签包裹内容
-            wrapped_content = f'<section><div class="markdown-body">{html_content}</div></section>'
-            return wrapped_content, 200, {'Content-Type': 'text/html'}
-    except Exception as e:
-        logger.error(f"Error in render_markdown: {str(e)}")
-        # Return error information in HTML format
-        error_html = f'<section><div class="error">渲染错误: {str(e)}</div></section>'
-        return error_html, 500, {'Content-Type': 'text/html'}
+        
+        # 执行CSS内联
+        inlined_html = inline(full_html)
+        
+        # 提取body中的内容并用<section>标签包裹
+        from bs4 import BeautifulSoup
+        soup = BeautifulSoup(inlined_html, 'html.parser')
+        body_content = soup.body.decode_contents()
+        wrapped_content = f'<section>{body_content}</section>'
+        
+        return wrapped_content, 200, {'Content-Type': 'text/html'}
+    else:
+        # 如果没有CSS，直接用<section>标签包裹内容
+        wrapped_content = f'<section><div class="markdown-body">{html_content}</div></section>'
+        return wrapped_content, 200, {'Content-Type': 'text/html'}
 
 @app.route('/wechat/access_token', methods=['POST'])
 def get_wechat_access_token():
@@ -242,17 +198,7 @@ def send_markdown_to_wechat_draft():
     appid = data.get('appid')
     secret = data.get('secret')
     markdown_content = data.get('markdown')
-    # Replace 'nn' sequences with actual newlines
-    while '\n\n' in markdown_content:
-        markdown_content = markdown_content.replace('\n\n', '\n')
-
-    # splitlines() separates lines and removes any empty strings
-    # lines = [line for line in text.splitlines() if line]
-
-    # Join the non-empty lines with a single newline
-    # cleaned_text = '\n'.join(lines)
-
-    style = data.get('style', 'yata.css')
+    style = data.get('style', 'sample.css')
     thumb_media_id = data.get('thumb_media_id', '')
     dash_separator = data.get('dashseparator', False)
     
@@ -294,16 +240,10 @@ def send_markdown_to_wechat_draft():
     
     logger.info(f"Extracted title: {title}")
     
-    # 3. 渲染Markdown为HTML（调用/render接口）
-    logger.info("Rendering Markdown to HTML via /render endpoint")
+    # 3. 渲染Markdown为HTML（使用现有的/render接口逻辑）
+    logger.info("Rendering Markdown to HTML")
     try:
-        render_data = {
-            'md': markdown_content,
-            'style': style
-        }
-        
-        # logger.info(f"building txt is: {markdown_content}")
-        # 如果需要处理dash separator，在这里预处理
+        # 处理dash separator逻辑
         if dash_separator:
             logger.info("Processing dash separator mode")
             # 按 --- 分割内容
@@ -318,47 +258,100 @@ def send_markdown_to_wechat_draft():
                     
                 logger.info(f"Processing section {i+1}: {section[:50]}...")
                 
-                # 调用render接口渲染每个section
-                section_render_data = {
-                    'md': section,
-                    'style': style
-                }
-                
-                # 这里模拟调用render函数
-                with app.test_client() as c:
-                    render_response = c.post('/render', json=section_render_data)
-                    # 检查渲染响应状态码
-                    if render_response.status_code != 200:
-                        logger.error(f"Render failed for section {i+1} with status {render_response.status_code}")
-                        return jsonify({'errcode': 500, 'errmsg': f'渲染Markdown失败: {render_response.get_data(as_text=True)}'}), 500
-                    section_html = render_response.get_data(as_text=True)
+                # 渲染每个section的Markdown
+                section_html = markdown.markdown(
+                    section,
+                    extensions=[
+                        'fenced_code',
+                        'tables',
+                        'nl2br',
+                        'pymdownx.superfences',
+                        'pymdownx.magiclink'
+                    ],
+                    extension_configs={
+                        'pymdownx.superfences': {
+                            'custom_fences': [
+                                {
+                                    'name': 'mermaid',
+                                    'class': 'mermaid',
+                                    'format': lambda source, language, css_class, options, md, **kwargs: f'<div class="{css_class}">{source}</div>'
+                                }
+                            ]
+                        }
+                    }
+                )
                 
                 # 第一个section用普通div，其余用section-card
                 if i == 0:
-                    # 移除<section>标签以便重新包装
-                    section_html = section_html.replace('<section>', '', 1).replace('</section>', '', 1)
                     html_sections.append(f'<div class="content-card">{section_html}</div>')
                 else:
-                    # 移除<section>标签以便重新包装
-                    section_html = section_html.replace('<section>', '', 1).replace('</section>', '', 1)
                     html_sections.append(f'<div class="section-card">{section_html}</div>')
             
             html_content = ''.join(html_sections)
             logger.info(f"Generated HTML with {len(html_sections)} sections")
-            
-            # 重新包装成<section>
-            wrapped_content = f'<section>{html_content}</section>'
         else:
-            # 正常模式：直接调用render接口
-            with app.test_client() as c:
-                render_response = c.post('/render', json=render_data)
-                # 检查渲染响应状态码
-                if render_response.status_code != 200:
-                    logger.error(f"Render failed with status {render_response.status_code}")
-                    return jsonify({'errcode': 500, 'errmsg': f'渲染Markdown失败: {render_response.get_data(as_text=True)}'}), 500
-                wrapped_content = render_response.get_data(as_text=True)
+            # 正常模式：直接渲染整个内容
+            html_content = markdown.markdown(
+                markdown_content,
+                extensions=[
+                    'fenced_code',
+                    'tables',
+                    'nl2br',
+                    'pymdownx.superfences',
+                    'pymdownx.magiclink'
+                ],
+                extension_configs={
+                    'pymdownx.superfences': {
+                        'custom_fences': [
+                            {
+                                'name': 'mermaid',
+                                'class': 'mermaid',
+                                'format': lambda source, language, css_class, options, md, **kwargs: f'<div class="{css_class}">{source}</div>'
+                            }
+                        ]
+                    }
+                }
+            )
         
-        logger.info("Successfully rendered HTML via /render endpoint")
+        # 加载CSS并内联
+        custom_css = ''
+        try:
+            if '..' not in style and style.endswith('.css'):
+                with open(f'./themes/{style}', 'r', encoding='utf-8') as f:
+                    custom_css = f.read()
+        except FileNotFoundError:
+            pass
+        
+        # 创建完整的HTML文档用于CSS内联
+        if custom_css:
+            full_html = f'''
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+{custom_css}
+</style>
+</head>
+<body>
+<div class="markdown-body">
+{html_content}
+</div>
+</body>
+</html>'''
+            
+            # 执行CSS内联
+            inlined_html = inline(full_html)
+            
+            # 提取body中的内容并用<section>标签包裹
+            from bs4 import BeautifulSoup
+            soup = BeautifulSoup(inlined_html, 'html.parser')
+            body_content = soup.body.decode_contents()
+            wrapped_content = f'<section>{body_content}</section>'
+        else:
+            # 如果没有CSS，直接用<section>标签包裹内容
+            wrapped_content = f'<section><div class="markdown-body">{html_content}</div></section>'
+        
+        logger.info("Successfully rendered and inlined HTML")
     except Exception as e:
         logger.error(f"Exception occurred while rendering Markdown: {str(e)}")
         return jsonify({'errcode': 500, 'errmsg': f'渲染Markdown失败: {str(e)}'}), 500
@@ -370,8 +363,6 @@ def send_markdown_to_wechat_draft():
     # 处理Unicode编码问题
     encoded_title = title.encode('utf-8').decode('latin-1') if isinstance(title, str) else title
     encoded_content = wrapped_content.encode('utf-8').decode('latin-1') if isinstance(wrapped_content, str) else wrapped_content
-    # encoded_content = encoded_content.replace(' ', '')
-    encoded_content = encoded_content.replace(' ', ' ') 
     
     article = {
         'title': encoded_title,
@@ -394,7 +385,7 @@ def send_markdown_to_wechat_draft():
     
     try:
         logger.info(f"Sending request to WeChat API: {draft_url}")
-        # logger.info(f"Request data: {articles}") #this line is changed
+        logger.info(f"Request data: {articles}")
         draft_response = requests.post(draft_url, json=articles, timeout=10)
         logger.info(f"WeChat API response status: {draft_response.status_code}")
         result = draft_response.json()
@@ -410,7 +401,78 @@ def send_markdown_to_wechat_draft():
         logger.error(f"Exception occurred while sending to WeChat draft: {str(e)}")
         return jsonify({'errcode': 500, 'errmsg': f'发送到微信草稿箱失败: {str(e)}'}), 500
 
+@app.route('/wechat/draft', methods=['POST'])
+def send_to_wechat_draft():
+    """
+    发送内容到微信草稿箱
+    根据微信官方文档：https://developers.weixin.qq.com/doc/service/api/draftbox/draftmanage/api_draft_add.html
+    """
+    logger.info("Received request to /wechat/draft")
+    data = request.get_json()
+    logger.info(f"Received draft request data: {data}")
+    
+    access_token = data.get('access_token')
+    title = data.get('title', '默认标题')
+    content = data.get('content')
+    author = data.get('author', '')
+    digest = data.get('digest', '')
+    content_source_url = data.get('content_source_url', '')
+    thumb_media_id = data.get('thumb_media_id', '')
+    need_open_comment = data.get('need_open_comment', 1)
+    only_fans_can_comment = data.get('only_fans_can_comment', 1)
 
+    if not access_token:
+        return jsonify({'errcode': 400, 'errmsg': '缺少access_token'}), 400
+    
+    if not content:
+        return jsonify({'errcode': 400, 'errmsg': '缺少内容'}), 400
+
+    # 构造微信API请求
+    url = f'https://api.weixin.qq.com/cgi-bin/draft/add?access_token={access_token}'
+    
+    # 构造文章内容
+    article = {
+        'title': title,
+        'author': author,
+        'digest': digest,
+        'content': content,
+        'content_source_url': content_source_url,
+        'need_open_comment': need_open_comment,
+        'only_fans_can_comment': only_fans_can_comment
+    }
+    
+    # 只有当thumb_media_id不为空时才添加
+    if thumb_media_id and thumb_media_id.strip() != '':
+        article['thumb_media_id'] = thumb_media_id
+        logger.info(f"Adding thumb_media_id: {thumb_media_id}")
+    else:
+        logger.info("No thumb_media_id provided")
+    
+    articles = {
+        'articles': [article]
+    }
+    
+    logger.info(f"Sending article to WeChat: {articles}")
+    
+    try:
+        logger.info(f"Sending request to WeChat API: {url}")
+        logger.info(f"Request data: {articles}")
+        response = requests.post(url, json=articles, timeout=10)
+        logger.info(f"WeChat API response status: {response.status_code}")
+        result = response.json()
+        logger.info(f"WeChat API response data: {result}")
+        
+        if 'errcode' in result and result['errcode'] != 0:
+            logger.info(f"WeChat API returned error: {result}")
+            return jsonify(result), 400
+        
+        logger.info("Successfully sent to WeChat draft")
+        return jsonify(result), 200
+    except Exception as e:
+        logger.error(f"Exception occurred: {str(e)}")
+        return jsonify({'errcode': 500, 'errmsg': f'请求微信API失败: {str(e)}'}), 500
+    except Exception as e:
+        return jsonify({'errcode': 500, 'errmsg': f'请求微信API失败: {str(e)}'}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5002, debug=False)
