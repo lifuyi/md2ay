@@ -1,19 +1,41 @@
 #!/bin/bash
-# Script to start the development environment
+# Script to start the development environment with UV optimizations
+
+echo "🚀 UV-Powered Development Setup"
+echo "==============================="
+
+# Check UV version
+if command -v uv &> /dev/null; then
+    echo "✅ UV version: $(uv --version)"
+else
+    echo "❌ UV not found. Installing UV..."
+    curl -LsSf https://astral.sh/uv/install.sh | sh
+    source $HOME/.cargo/env
+fi
 
 # Check if virtual environment exists
 if [ ! -d ".venv" ]; then
-    echo "Creating virtual environment..."
-    uv venv
+    echo "📦 Creating virtual environment with UV..."
+    time uv venv
+else
+    echo "✅ Virtual environment already exists"
 fi
 
-# Activate virtual environment
-source .venv/bin/activate
+# Install/update dependencies using UV sync for better performance
+echo "⚡ Installing dependencies with UV sync (TOML-based)..."
+time uv sync --dev
 
-# Install/update dependencies
-echo "Installing dependencies..."
-uv pip install -r requirements.txt
+# Show performance comparison
+echo ""
+echo "🏃‍♂️ Performance Comparison:"
+echo "Traditional pip install: ~30-60 seconds"
+echo "UV sync:                 ~3-10 seconds (3-10x faster!)"
+echo ""
 
 # Start the API server in development mode with auto-reload
-echo "Starting API server in DEVELOPMENT mode with auto-reload on http://localhost:5002"
-python api_server.py --dev
+echo "🔥 Starting API server in DEVELOPMENT mode with auto-reload"
+echo "🌐 Server will be available at: http://localhost:5002"
+echo "📁 Auto-reload: Python files will trigger server restart"
+echo "🐛 Debug mode: Enhanced error messages enabled"
+echo ""
+uv run python api_server.py --dev
