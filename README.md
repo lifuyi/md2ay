@@ -16,6 +16,19 @@ A tool to convert Markdown documents to various formats with custom CSS styling.
 
 This project uses `uv` for Python dependency management. To get started:
 
+### Development Mode (with auto-reload)
+```bash
+# One command setup and start
+./start_dev.sh
+```
+
+### Production Mode (optimized)
+```bash
+# One command setup and start
+./start_prod.sh
+```
+
+### Manual Setup
 1. Install uv (if not already installed):
    ```bash
    pip install uv
@@ -38,6 +51,10 @@ This project uses `uv` for Python dependency management. To get started:
 
 5. Run the API server:
    ```bash
+   # Development mode (auto-reload enabled)
+   python api_server.py --dev
+   
+   # Production mode (optimized)
    python api_server.py
    ```
 
@@ -123,6 +140,25 @@ curl -X POST http://localhost:5002/wechat/send_draft \
 ```
 
 ## Development
+
+### Startup Scripts
+
+The project includes convenient startup scripts for different environments:
+
+| Script | Mode | Features | Use Case |
+|--------|------|----------|----------|
+| `./start_dev.sh` | Development | Auto-reload, debug mode | Development & testing |
+| `./start_prod.sh` | Production | Optimized, no debug | Production deployment |
+
+#### Development Mode Features:
+- 🔥 **Auto-reload**: Server restarts automatically on file changes
+- 🐛 **Debug mode**: Enhanced error messages and debugging
+- 📁 **File watching**: Static files served with latest changes
+
+#### Production Mode Features:
+- 🚀 **Optimized**: `PYTHONOPTIMIZE=1` for better performance
+- 🔒 **Secure**: Debug mode disabled
+- 🛡️ **Stable**: No file watching overhead
 
 ### Adding New Themes
 
