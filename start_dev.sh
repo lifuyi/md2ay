@@ -14,6 +14,6 @@ source .venv/bin/activate
 echo "Installing dependencies..."
 uv pip install -r requirements.txt
 
-# Start the API server
-echo "Starting API server on http://localhost:5002"
-python api_server.py
+# Start the API server in development mode with auto-reload
+echo "Starting API server in DEVELOPMENT mode with auto-reload on http://localhost:5002"
+python api_server.py --dev

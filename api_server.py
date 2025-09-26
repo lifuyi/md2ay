@@ -491,4 +491,15 @@ def send_to_wechat_draft():
         return jsonify({'errcode': 500, 'errmsg': f'请求微信API失败: {str(e)}'}), 500
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5002, debug=False)
+    import os
+    import sys
+    
+    # Check if we're in development mode
+    dev_mode = '--dev' in sys.argv or os.getenv('FLASK_ENV') == 'development'
+    
+    if dev_mode:
+        print("🔥 Starting in DEVELOPMENT mode with auto-reload enabled")
+        app.run(host='0.0.0.0', port=5002, debug=True, use_reloader=True)
+    else:
+        print("🚀 Starting in PRODUCTION mode")
+        app.run(host='0.0.0.0', port=5002, debug=False)
