@@ -1,15 +1,19 @@
-FROM --platform=$TARGETPLATFORM python:3.9-alpine
+FROM --platform=$TARGETPLATFORM python:3.11-alpine
 
 ARG TARGETPLATFORM
 ARG BUILDPLATFORM
 
 WORKDIR /app
 
-COPY requirements.txt .
+# Install UV for ultra-fast dependency management
+RUN pip install uv
 
-# Install python packages and remove build dependencies
+# Copy dependency files for UV
+COPY pyproject.toml uv.lock* ./
+
+# Install dependencies with UV (much faster than pip)
 RUN apk add --no-cache --virtual .build-deps gcc musl-dev && \
-    pip install --no-cache-dir -r requirements.txt && \
+    uv sync --dev --no-install-project && \
     apk del .build-deps
 
 # Copy application files
@@ -26,4 +30,8 @@ COPY *.md ./
 
 EXPOSE 5002
 
-CMD ["python", "api_server.py"]
+# Set development environment
+ENV FLASK_ENV=development
+ENV PYTHONUNBUFFERED=1
+
+CMD ["uv", "run", "python", "api_server.py", "--dev"]

@@ -1,8 +1,0 @@
-Flask
-markdown
-pymdown-extensions
-beautifulsoup4
-requests
-css_inline
-Flask-Cors
-watchdog

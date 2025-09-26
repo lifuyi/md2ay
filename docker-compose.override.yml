@@ -1,0 +1,17 @@
+# Development overrides for docker-compose
+# This file is automatically loaded by docker-compose for development
+
+version: '3.8'
+
+services:
+  md2any:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      # Mount source code for hot reload
+      - .:/app
+      - /app/.venv  # Prevent mounting over virtual environment
+    environment:
+      - FLASK_ENV=development
+    command: ["uv", "run", "python", "api_server.py", "--dev"]
