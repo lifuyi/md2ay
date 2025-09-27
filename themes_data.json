@@ -1,0 +1,38 @@
+[
+  {
+    "name": "苹果备忘录",
+    "enName": "Apple Notes",
+    "id": "apple-notes",
+    "css": "/* 颜色变量定义 */\\n:root {\\n  --notes-bg: #ffffff;\\n  --notes-text: #333333;\\n  --notes-title-color: rgb(248, 199, 68);\\n  --notes-accent: #c7212d;\\n  --notes-border: rgba(0, 0, 0, 0.1);\\n  --notes-quote-color: #666666;\\n  --notes-code-bg: rgba(0, 0, 0, 0.05);\\n  --notes-mark-bg: rgb(254, 225, 115);\\n  --notes-table-header: rgba(255, 204, 0, 0.2);\\n  --notes-table-border: rgba(0, 0, 0, 0.05);\\n}\\n\\n/* 暗黑模式变量 */\\n.dark-mode {\\n  --notes-bg: #1c1c1e;\\n  --notes-text: #ffffff;\\n  --notes-title-color: rgb(255, 214, 10);\\n  --notes-accent: #ff453a;\\n  --notes-border: rgba(255, 255, 255, 0.1);\\n  --notes-quote-color: #989898;\\n  --notes-code-bg: rgba(255, 255, 255, 0.1);\\n  --notes-mark-bg: rgba(255, 214, 10, 0.3);\\n  --notes-table-header: rgba(255, 214, 10, 0.2);\\n  --notes-table-border: rgba(255, 255, 255, 0.1);\\n}\\n\\n/* 苹果备忘录风格 */\\n/* 卡片内容样式 */\\n.card-apple-notes .wavy-underline {\\n  text-decoration-color: var(--notes-accent);\\n}\\n\\n.card-apple-notes .card-header::before {\\n  content: \\"
+  },
+  {
+    "name": "线圈笔记本",
+    "enName": "Coil Notebook",
+    "id": "coil-notebook",
+    "css": "/* 颜色变量定义 */\\n.card-coil-notebook {\\n  /* 基础颜色 */\\n  --coil-text: #24292e;\\n  --coil-border: #a6a6a6;\\n\\n  /* 背景模式变量 */\\n  --coil-bg-color: #5271ff;\\n  --coil-grid-color: rgba(255, 255, 255, 0.2);\\n  --coil-content-bg: #fff;\\n  --coil-list-bg: rgba(255, 255, 255, 0.7);\\n  --coil-shadow: rgba(0, 0, 0, 0.1);\\n}\\n\\n/* 小红书粉色主题 */\\n.card-coil-notebook.pink-mode {\\n  --coil-bg-color: #ff4e79;\\n}\\n\\n/* 小红书薄荷绿主题 */\\n.card-coil-notebook.mint-mode {\\n  --coil-bg-color: #7fd1ae;\\n}\\n\\n/* 小红书暖黄主题 */\\n.card-coil-notebook.yellow-mode {\\n  --coil-bg-color: #ffd666;\\n  --coil-grid-color: rgba(0, 0, 0, 0.1);\\n  --coil-list-bg: rgba(255, 255, 255, 0.9);\\n}\\n\\n/* 线圈笔记本样式 */\\n.card-coil-notebook {\\n  background-color: var(--coil-bg-color) !important;\\n  background-image:\\n    linear-gradient(var(--coil-grid-color) 1px, transparent 1px),\\n    linear-gradient(90deg, var(--coil-grid-color) 1px, transparent 1px);\\n  background-size: 20px 20px;\\n  background-position: -5px -5px;\\n  padding: 20px;\\n}\\n\\n.card-content {\\n  background-image: url(\"/assets/img/coil-bg.png\");\\n  background-position: top left;\\n  background-repeat: repeat-y;\\n  background-size: 36px 33px;\\n  padding-left: 36px;\\n  box-shadow: 0 2px 10px var(--coil-shadow);\\n}\\n.card-content-inner {\\n  height: calc(var(--card-height) - 40px);\\n  background: var(--coil-content-bg);\\n  padding: 20px 20px 20px 0;\\n}\\n\\n/* 列表样式 */\\n.card-content ul,\\n.card-content ol {\\n  background-color: var(--coil-list-bg);\\n  padding: 15px;\\n  border: 1px dashed var(--coil-border);\\n  border-radius: 8px;\\n}\\n.card-content ul li {\\n  margin: 10px 0;\\n}\\n.card-content ol li::before,\\n.card-content ul li::before {\\n  background: #ffd666;\\n  margin-right: 8px;\\n  display: block;\\n  float: left;\\n}\\n.card-content ul li::before {\\n  content: \"★\";\\n  color: var(--coil-text);\\n  font-size: 14px;\\n  background-size: 24px;\\n  background-repeat: no-repeat;\\n  background-position: center;\\n  width: 24px;\\n  height: 24px;\\n  border-radius: 50%;\\n  text-align: center;\\n  line-height: 24px;\\n}\\n.card-content ol li {\\n  margin: 10px 0;\\n  counter-increment: item;\\n}\\n\\n.card-content ol li::before {\\n  content: attr(data-index);\\n  background-size: 24px;\\n  background-repeat: no-repeat;\\n  background-position: center;\\n  color: var(--coil-text);\\n  font-weight: 700;\\n  width: 24px;\\n  height: 24px;\\n  border-radius: 50%;\\n  text-align: center;\\n  line-height: 24px;\\n}\\n\\n/* 响应式调整 */\\n@media (prefers-color-scheme: dark) {\\n  .card-coil-notebook {\\n    --coil-grid-color: rgba(255, 255, 255, 0.15);\\n    --coil-content-bg: #ffffff;\\n    --coil-list-bg: rgba(255, 255, 255, 0.8);\\n    --coil-shadow: rgba(0, 0, 0, 0.2);\\n  }\\n}\\n\\n.card-coil-notebook .card-footer {\\n  position: relative;\\n}\\n\\n.card-coil-notebook .card-footer .page {\\n  font-size: 12px;\\n  position: absolute;\\n  right: 10px;\\n  bottom: 10px;\\n}\\n"
+  },
+  {
+    "name": "波普艺术",
+    "enName": "Pop Art",
+    "id": "pop-art",
+    "css": "/* 颜色变量定义 */\\n:root {\\n  /* 基础颜色 */\\n  --pop-primary: #ff2e63;\\n  --pop-secondary: #51bafa;\\n  --pop-bg: #fde041;\\n  --pop-text: #252a34;\\n  --pop-dots: url(\\"
+  },
+  {
+    "name": "字节范",
+    "enName": "ByteDance",
+    "id": "bytedance",
+    "css": ".card-bytedance {\\n  font-family: \\"
+  },
+  {
+    "name": "阿里橙",
+    "enName": "Alibaba",
+    "id": "alibaba",
+    "css": "/* --- Alibaba Style Card with SVG Backgrounds --- */\\n\\n.card-alibaba {\\n  font-family:\\n    \\"
+  },
+  {
+    "name": "艺术装饰",
+    "enName": "Art deco",
+    "id": "art-deco",
+    "css": "/* 艺术装饰风格 */\\n/* 卡片内容样式 */\\n.card-art-deco .wavy-underline {\\n  text-decoration-color: #d4af37;\\n}\\n\\n.card-art-deco {\\n  background-color: #0a0a0a;\\n  background-image: url(\\"
+  }
+]

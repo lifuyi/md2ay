@@ -1,32 +1,32 @@
-/* 方形风格 Theme */
-/* Theme ID: square */
+/* 线圈笔记本 Theme */
+/* Theme ID: coil-notebook */
 
 :root {
-  --bg-color: #ffffff;
-  --content-bg: #ffffff;
-  --text-color: #333333;
-  --h1-bg: #34495e;
+  --bg-color: #5271ff;
+  --content-bg: #5271ff;
+  --text-color: #24292e;
+  --h1-bg: #ffd666;
   --h1-color: #ffffff;
-  --h2-color: #333333;
-  --h2-bg: #f8f8f8;
-  --h3-color: #333333;
-  --h3-bg: #f8f8f8;
-  --h4-color: #333333;
-  --h4-bg: #f8f8f8;
-  --strong-color: #34495e;
-  --em-color: #34495e;
-  --link-color: #34495e;
-  --code-bg: #f8f8f8;
-  --code-color: #333333;
+  --h2-color: #24292e;
+  --h2-bg: #5271ff20;
+  --h3-color: #24292e;
+  --h3-bg: #5271ff20;
+  --h4-color: #24292e;
+  --h4-bg: #5271ff20;
+  --strong-color: #ffd666;
+  --em-color: #ffd666;
+  --link-color: #ffd666;
+  --code-bg: #5271ff20;
+  --code-color: #24292e;
   --inline-code-bg: rgba(0,0,0,0.1);
-  --quote-color: #333333;
-  --quote-bg: #f8f8f8;
-  --quote-border: #34495e;
-  --table-header-color: #333333;
-  --table-header-bg: #f8f8f8;
-  --table-text-color: #333333;
-  --table-border: #34495e;
-  --hr-color: #f8f8f8;
+  --quote-color: #24292e;
+  --quote-bg: #5271ff20;
+  --quote-border: #ffd666;
+  --table-header-color: #24292e;
+  --table-header-bg: #5271ff20;
+  --table-text-color: #24292e;
+  --table-border: #ffd666;
+  --hr-color: #5271ff20;
 }
 
 /* Body and container styles */

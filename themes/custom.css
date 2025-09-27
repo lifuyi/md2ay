@@ -1,7 +1,7 @@
 /* Custom Theme */
 body {
     margin: 0;
-    background-color: #f9f9f9;
+    background-color: #c1c2c3;
 }
 
 .markdown-body {
@@ -29,7 +29,7 @@ h1 {
     font-size: 22px;
     font-weight: 700;
     text-align: center;
-    color: #1d1d1f;
+    color: #0000ff;
 }
 
 h2 {

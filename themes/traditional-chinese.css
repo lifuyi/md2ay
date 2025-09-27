@@ -1,32 +1,32 @@
-/* 方形风格 Theme */
-/* Theme ID: square */
+/* 中国传统 Theme */
+/* Theme ID: traditional-chinese */
 
 :root {
-  --bg-color: #ffffff;
-  --content-bg: #ffffff;
-  --text-color: #333333;
-  --h1-bg: #34495e;
+  --bg-color: #f8f0e0;
+  --content-bg: #f8f0e0;
+  --text-color: #8b0000;
+  --h1-bg: #a52a2a;
   --h1-color: #ffffff;
-  --h2-color: #333333;
-  --h2-bg: #f8f8f8;
-  --h3-color: #333333;
-  --h3-bg: #f8f8f8;
-  --h4-color: #333333;
-  --h4-bg: #f8f8f8;
-  --strong-color: #34495e;
-  --em-color: #34495e;
-  --link-color: #34495e;
-  --code-bg: #f8f8f8;
-  --code-color: #333333;
+  --h2-color: #8b0000;
+  --h2-bg: #f8f0e020;
+  --h3-color: #8b0000;
+  --h3-bg: #f8f0e020;
+  --h4-color: #8b0000;
+  --h4-bg: #f8f0e020;
+  --strong-color: #a52a2a;
+  --em-color: #a52a2a;
+  --link-color: #a52a2a;
+  --code-bg: #f8f0e020;
+  --code-color: #8b0000;
   --inline-code-bg: rgba(0,0,0,0.1);
-  --quote-color: #333333;
-  --quote-bg: #f8f8f8;
-  --quote-border: #34495e;
-  --table-header-color: #333333;
-  --table-header-bg: #f8f8f8;
-  --table-text-color: #333333;
-  --table-border: #34495e;
-  --hr-color: #f8f8f8;
+  --quote-color: #8b0000;
+  --quote-bg: #f8f0e020;
+  --quote-border: #a52a2a;
+  --table-header-color: #8b0000;
+  --table-header-bg: #f8f0e020;
+  --table-text-color: #8b0000;
+  --table-border: #a52a2a;
+  --hr-color: #f8f0e020;
 }
 
 /* Body and container styles */

@@ -1,32 +1,32 @@
-/* 方形风格 Theme */
-/* Theme ID: square */
+/* 温暖柔和 Theme */
+/* Theme ID: warm */
 
 :root {
-  --bg-color: #ffffff;
-  --content-bg: #ffffff;
+  --bg-color: #fff8f5;
+  --content-bg: #fff8f5;
   --text-color: #333333;
-  --h1-bg: #34495e;
+  --h1-bg: #ff7e4f;
   --h1-color: #ffffff;
   --h2-color: #333333;
-  --h2-bg: #f8f8f8;
+  --h2-bg: #fff8f520;
   --h3-color: #333333;
-  --h3-bg: #f8f8f8;
+  --h3-bg: #fff8f520;
   --h4-color: #333333;
-  --h4-bg: #f8f8f8;
-  --strong-color: #34495e;
-  --em-color: #34495e;
-  --link-color: #34495e;
-  --code-bg: #f8f8f8;
+  --h4-bg: #fff8f520;
+  --strong-color: #ff7e4f;
+  --em-color: #ff7e4f;
+  --link-color: #ff7e4f;
+  --code-bg: #fff8f520;
   --code-color: #333333;
   --inline-code-bg: rgba(0,0,0,0.1);
   --quote-color: #333333;
-  --quote-bg: #f8f8f8;
-  --quote-border: #34495e;
+  --quote-bg: #fff8f520;
+  --quote-border: #ff7e4f;
   --table-header-color: #333333;
-  --table-header-bg: #f8f8f8;
+  --table-header-bg: #fff8f520;
   --table-text-color: #333333;
-  --table-border: #34495e;
-  --hr-color: #f8f8f8;
+  --table-border: #ff7e4f;
+  --hr-color: #fff8f520;
 }
 
 /* Body and container styles */

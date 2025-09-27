@@ -1,11 +1,11 @@
-/* 方形风格 Theme */
-/* Theme ID: square */
+/* 苹果备忘录 Theme */
+/* Theme ID: apple-notes */
 
 :root {
   --bg-color: #ffffff;
   --content-bg: #ffffff;
   --text-color: #333333;
-  --h1-bg: #34495e;
+  --h1-bg: #c7212d;
   --h1-color: #ffffff;
   --h2-color: #333333;
   --h2-bg: #f8f8f8;
@@ -13,19 +13,19 @@
   --h3-bg: #f8f8f8;
   --h4-color: #333333;
   --h4-bg: #f8f8f8;
-  --strong-color: #34495e;
-  --em-color: #34495e;
-  --link-color: #34495e;
+  --strong-color: #c7212d;
+  --em-color: #c7212d;
+  --link-color: #c7212d;
   --code-bg: #f8f8f8;
   --code-color: #333333;
   --inline-code-bg: rgba(0,0,0,0.1);
   --quote-color: #333333;
   --quote-bg: #f8f8f8;
-  --quote-border: #34495e;
+  --quote-border: #c7212d;
   --table-header-color: #333333;
   --table-header-bg: #f8f8f8;
   --table-text-color: #333333;
-  --table-border: #34495e;
+  --table-border: #c7212d;
   --hr-color: #f8f8f8;
 }
 

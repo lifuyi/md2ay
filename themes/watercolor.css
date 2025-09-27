@@ -1,31 +1,31 @@
-/* 方形风格 Theme */
-/* Theme ID: square */
+/* 水彩艺术 Theme */
+/* Theme ID: watercolor */
 
 :root {
   --bg-color: #ffffff;
   --content-bg: #ffffff;
-  --text-color: #333333;
-  --h1-bg: #34495e;
+  --text-color: #666666;
+  --h1-bg: #5e72e4;
   --h1-color: #ffffff;
-  --h2-color: #333333;
+  --h2-color: #666666;
   --h2-bg: #f8f8f8;
-  --h3-color: #333333;
+  --h3-color: #666666;
   --h3-bg: #f8f8f8;
-  --h4-color: #333333;
+  --h4-color: #666666;
   --h4-bg: #f8f8f8;
-  --strong-color: #34495e;
-  --em-color: #34495e;
-  --link-color: #34495e;
+  --strong-color: #5e72e4;
+  --em-color: #5e72e4;
+  --link-color: #5e72e4;
   --code-bg: #f8f8f8;
-  --code-color: #333333;
+  --code-color: #666666;
   --inline-code-bg: rgba(0,0,0,0.1);
-  --quote-color: #333333;
+  --quote-color: #666666;
   --quote-bg: #f8f8f8;
-  --quote-border: #34495e;
-  --table-header-color: #333333;
+  --quote-border: #5e72e4;
+  --table-header-color: #666666;
   --table-header-bg: #f8f8f8;
-  --table-text-color: #333333;
-  --table-border: #34495e;
+  --table-text-color: #666666;
+  --table-border: #5e72e4;
   --hr-color: #f8f8f8;
 }
 

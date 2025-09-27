@@ -1,32 +1,32 @@
-/* 方形风格 Theme */
-/* Theme ID: square */
+/* 复古打字机 Theme */
+/* Theme ID: typewriter */
 
 :root {
-  --bg-color: #ffffff;
-  --content-bg: #ffffff;
-  --text-color: #333333;
-  --h1-bg: #34495e;
+  --bg-color: #f8f3e3;
+  --content-bg: #f8f3e3;
+  --text-color: #4a4a4a;
+  --h1-bg: #8b4513;
   --h1-color: #ffffff;
-  --h2-color: #333333;
-  --h2-bg: #f8f8f8;
-  --h3-color: #333333;
-  --h3-bg: #f8f8f8;
-  --h4-color: #333333;
-  --h4-bg: #f8f8f8;
-  --strong-color: #34495e;
-  --em-color: #34495e;
-  --link-color: #34495e;
-  --code-bg: #f8f8f8;
-  --code-color: #333333;
+  --h2-color: #4a4a4a;
+  --h2-bg: #f8f3e320;
+  --h3-color: #4a4a4a;
+  --h3-bg: #f8f3e320;
+  --h4-color: #4a4a4a;
+  --h4-bg: #f8f3e320;
+  --strong-color: #8b4513;
+  --em-color: #8b4513;
+  --link-color: #8b4513;
+  --code-bg: #f8f3e320;
+  --code-color: #4a4a4a;
   --inline-code-bg: rgba(0,0,0,0.1);
-  --quote-color: #333333;
-  --quote-bg: #f8f8f8;
-  --quote-border: #34495e;
-  --table-header-color: #333333;
-  --table-header-bg: #f8f8f8;
-  --table-text-color: #333333;
-  --table-border: #34495e;
-  --hr-color: #f8f8f8;
+  --quote-color: #4a4a4a;
+  --quote-bg: #f8f3e320;
+  --quote-border: #8b4513;
+  --table-header-color: #4a4a4a;
+  --table-header-bg: #f8f3e320;
+  --table-text-color: #4a4a4a;
+  --table-border: #8b4513;
+  --hr-color: #f8f3e320;
 }
 
 /* Body and container styles */

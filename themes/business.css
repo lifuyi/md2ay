@@ -1,31 +1,31 @@
-/* 方形风格 Theme */
-/* Theme ID: square */
+/* 商务简报 Theme */
+/* Theme ID: business */
 
 :root {
   --bg-color: #ffffff;
   --content-bg: #ffffff;
-  --text-color: #333333;
-  --h1-bg: #34495e;
+  --text-color: #283e59;
+  --h1-bg: #2c7be5;
   --h1-color: #ffffff;
-  --h2-color: #333333;
+  --h2-color: #283e59;
   --h2-bg: #f8f8f8;
-  --h3-color: #333333;
+  --h3-color: #283e59;
   --h3-bg: #f8f8f8;
-  --h4-color: #333333;
+  --h4-color: #283e59;
   --h4-bg: #f8f8f8;
-  --strong-color: #34495e;
-  --em-color: #34495e;
-  --link-color: #34495e;
+  --strong-color: #2c7be5;
+  --em-color: #2c7be5;
+  --link-color: #2c7be5;
   --code-bg: #f8f8f8;
-  --code-color: #333333;
+  --code-color: #283e59;
   --inline-code-bg: rgba(0,0,0,0.1);
-  --quote-color: #333333;
+  --quote-color: #283e59;
   --quote-bg: #f8f8f8;
-  --quote-border: #34495e;
-  --table-header-color: #333333;
+  --quote-border: #2c7be5;
+  --table-header-color: #283e59;
   --table-header-bg: #f8f8f8;
-  --table-text-color: #333333;
-  --table-border: #34495e;
+  --table-text-color: #283e59;
+  --table-border: #2c7be5;
   --hr-color: #f8f8f8;
 }
 

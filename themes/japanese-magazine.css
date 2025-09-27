@@ -1,31 +1,31 @@
-/* 方形风格 Theme */
-/* Theme ID: square */
+/* 日本杂志 Theme */
+/* Theme ID: japanese-magazine */
 
 :root {
   --bg-color: #ffffff;
   --content-bg: #ffffff;
-  --text-color: #333333;
-  --h1-bg: #34495e;
+  --text-color: #000000;
+  --h1-bg: #000000;
   --h1-color: #ffffff;
-  --h2-color: #333333;
+  --h2-color: #000000;
   --h2-bg: #f8f8f8;
-  --h3-color: #333333;
+  --h3-color: #000000;
   --h3-bg: #f8f8f8;
-  --h4-color: #333333;
+  --h4-color: #000000;
   --h4-bg: #f8f8f8;
-  --strong-color: #34495e;
-  --em-color: #34495e;
-  --link-color: #34495e;
+  --strong-color: #000000;
+  --em-color: #000000;
+  --link-color: #000000;
   --code-bg: #f8f8f8;
-  --code-color: #333333;
+  --code-color: #000000;
   --inline-code-bg: rgba(0,0,0,0.1);
-  --quote-color: #333333;
+  --quote-color: #000000;
   --quote-bg: #f8f8f8;
-  --quote-border: #34495e;
-  --table-header-color: #333333;
+  --quote-border: #000000;
+  --table-header-color: #000000;
   --table-header-bg: #f8f8f8;
-  --table-text-color: #333333;
-  --table-border: #34495e;
+  --table-text-color: #000000;
+  --table-border: #000000;
   --hr-color: #f8f8f8;
 }
 

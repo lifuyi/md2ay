@@ -1,32 +1,32 @@
-/* 方形风格 Theme */
-/* Theme ID: square */
+/* 紫色小红书 Theme */
+/* Theme ID: xiaohongshu */
 
 :root {
-  --bg-color: #ffffff;
-  --content-bg: #ffffff;
+  --bg-color: #8863cf;
+  --content-bg: #8863cf;
   --text-color: #333333;
-  --h1-bg: #34495e;
+  --h1-bg: #8863cf;
   --h1-color: #ffffff;
   --h2-color: #333333;
-  --h2-bg: #f8f8f8;
+  --h2-bg: #8863cf20;
   --h3-color: #333333;
-  --h3-bg: #f8f8f8;
+  --h3-bg: #8863cf20;
   --h4-color: #333333;
-  --h4-bg: #f8f8f8;
-  --strong-color: #34495e;
-  --em-color: #34495e;
-  --link-color: #34495e;
-  --code-bg: #f8f8f8;
+  --h4-bg: #8863cf20;
+  --strong-color: #8863cf;
+  --em-color: #8863cf;
+  --link-color: #8863cf;
+  --code-bg: #8863cf20;
   --code-color: #333333;
   --inline-code-bg: rgba(0,0,0,0.1);
   --quote-color: #333333;
-  --quote-bg: #f8f8f8;
-  --quote-border: #34495e;
+  --quote-bg: #8863cf20;
+  --quote-border: #8863cf;
   --table-header-color: #333333;
-  --table-header-bg: #f8f8f8;
+  --table-header-bg: #8863cf20;
   --table-text-color: #333333;
-  --table-border: #34495e;
-  --hr-color: #f8f8f8;
+  --table-border: #8863cf;
+  --hr-color: #8863cf20;
 }
 
 /* Body and container styles */

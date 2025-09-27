@@ -1,32 +1,32 @@
-/* 方形风格 Theme */
-/* Theme ID: square */
+/* 儿童童话 Theme */
+/* Theme ID: fairytale */
 
 :root {
-  --bg-color: #ffffff;
-  --content-bg: #ffffff;
-  --text-color: #333333;
-  --h1-bg: #34495e;
+  --bg-color: #fff9f9;
+  --content-bg: #fff9f9;
+  --text-color: #5e7cff;
+  --h1-bg: #ffb7c5;
   --h1-color: #ffffff;
-  --h2-color: #333333;
-  --h2-bg: #f8f8f8;
-  --h3-color: #333333;
-  --h3-bg: #f8f8f8;
-  --h4-color: #333333;
-  --h4-bg: #f8f8f8;
-  --strong-color: #34495e;
-  --em-color: #34495e;
-  --link-color: #34495e;
-  --code-bg: #f8f8f8;
-  --code-color: #333333;
+  --h2-color: #5e7cff;
+  --h2-bg: #fff9f920;
+  --h3-color: #5e7cff;
+  --h3-bg: #fff9f920;
+  --h4-color: #5e7cff;
+  --h4-bg: #fff9f920;
+  --strong-color: #ffb7c5;
+  --em-color: #ffb7c5;
+  --link-color: #ffb7c5;
+  --code-bg: #fff9f920;
+  --code-color: #5e7cff;
   --inline-code-bg: rgba(0,0,0,0.1);
-  --quote-color: #333333;
-  --quote-bg: #f8f8f8;
-  --quote-border: #34495e;
-  --table-header-color: #333333;
-  --table-header-bg: #f8f8f8;
-  --table-text-color: #333333;
-  --table-border: #34495e;
-  --hr-color: #f8f8f8;
+  --quote-color: #5e7cff;
+  --quote-bg: #fff9f920;
+  --quote-border: #ffb7c5;
+  --table-header-color: #5e7cff;
+  --table-header-bg: #fff9f920;
+  --table-text-color: #5e7cff;
+  --table-border: #ffb7c5;
+  --hr-color: #fff9f920;
 }
 
 /* Body and container styles */
