@@ -1002,6 +1002,15 @@ $x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a}$
                         option.textContent = style.replace('.css', ''); // Display name without .css
                         themeSelector.appendChild(option);
                     });
+                    
+                    // Set yata.css as the default theme if it exists
+                    if (styles.includes('yata.css')) {
+                        themeSelector.value = 'yata.css';
+                    }
+                    
+                    // Update active theme option to match the selected theme
+                    updateActiveThemeOption();
+                    
                     // After populating, render the initial markdown if any
                     renderMarkdown();
                 })
@@ -1015,6 +1024,13 @@ $x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a}$
                         option.textContent = style.replace('.css', '');
                         themeSelector.appendChild(option);
                     });
+                    
+                    // Set yata.css as the default theme
+                    themeSelector.value = 'yata.css';
+                    
+                    // Update active theme option to match the selected theme
+                    updateActiveThemeOption();
+                    
                     updateStatus('使用默认主题', false);
                     renderMarkdown();
                 });
