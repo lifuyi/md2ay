@@ -22,39 +22,13 @@ body {
     word-wrap: break-word;
     overflow-wrap: break-word;
     padding: 0;
+  max-width: 677px;
 }
 
 /* Header section with logo */
-.header-section {
-    background-color: #fff;
-    text-align: center;
-    border-bottom: 5px solid #eee;
-    padding: 20px;
-    margin: 0;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.header-section img {
-    max-width: 100%;
-    height: auto;
-}
 
 /* Content cards - regular articles */
-.content-card, 
-div:not(.header-section):not(.section-card) {
-    background-color: #fff;
-    border-radius: 20px;
-    margin: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-    overflow: hidden;
-    padding: 25px;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    width: calc(100% - 40px);
-    box-sizing: border-box;
-}
-
+.section-card {
 /* Section card - visually independent area */
 .section-card {
     background: #ffffff;
@@ -95,7 +69,7 @@ div:not(.header-section):not(.section-card) {
 }
 
 /* Last card margin adjustment */
-.content-card:last-child {
+.section-card:last-child {
     margin-bottom: 10px;
 }
 
@@ -396,9 +370,10 @@ hr {
     .markdown-body {
         width: 100%;
         border-radius: 10px;
-    }
+      max-width: 677px;
+}
     
-    .content-card {
+    .section-card {
         margin: 20px 10px;
         padding: 20px 15px;
         border-radius: 12px;
@@ -442,7 +417,7 @@ hr {
 }
 
 @media (max-width: 480px) {
-    .content-card {
+    .section-card {
         margin: 15px 5px;
         padding: 15px 10px;
         width: calc(100% - 10px);
@@ -469,4 +444,12 @@ hr {
     h4 {
         font-size: 16px;
     }
+}
+/* Rich media image styles */
+.rich_pages.wxw-img {
+    max-width: 100%;
+    border-radius: 8px;
+    margin: 1.5em auto;
+    display: block;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
 }

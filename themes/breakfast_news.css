@@ -23,43 +23,13 @@ body {
     overflow-wrap: break-word;
     padding: 0;
     border: 1px solid #ffeaa7;
+  max-width: 677px;
 }
 
 /* Header section with logo */
-.header-section {
-    background: linear-gradient(135deg, #ffd166 0%, #ffb347 100%);
-    text-align: center;
-    border-bottom: 5px solid #ffb347;
-    padding: 25px;
-    margin: 0;
-    width: 100%;
-    box-sizing: border-box;
-    border-radius: 15px 15px 0 0;
-    color: #fff;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-}
-
-.header-section img {
-    max-width: 100%;
-    height: auto;
-}
 
 /* Content cards - regular articles */
-.content-card, 
-div:not(.header-section):not(.section-card) {
-    background: #fff;
-    border-radius: 20px;
-    margin: 20px;
-    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.15);
-    overflow: hidden;
-    padding: 25px;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    width: calc(100% - 40px);
-    box-sizing: border-box;
-    border: 1px solid #fff3cd;
-}
-
+.section-card {
 /* Section card - visually independent area */
 .section-card {
     background: #fff;
@@ -101,7 +71,7 @@ div:not(.header-section):not(.section-card) {
 }
 
 /* Last card margin adjustment */
-.content-card:last-child {
+.section-card:last-child {
     margin-bottom: 10px;
 }
 
@@ -433,9 +403,10 @@ hr {
     .markdown-body {
         width: 100%;
         border-radius: 10px;
-    }
+      max-width: 677px;
+}
     
-    .content-card {
+    .section-card {
         margin: 20px 10px;
         padding: 20px 15px;
         border-radius: 12px;
@@ -479,7 +450,7 @@ hr {
 }
 
 @media (max-width: 480px) {
-    .content-card {
+    .section-card {
         margin: 15px 5px;
         padding: 15px 10px;
         width: calc(100% - 10px);
@@ -506,4 +477,12 @@ hr {
     h4 {
         font-size: 16px;
     }
+}
+/* Rich media image styles */
+.rich_pages.wxw-img {
+    max-width: 100%;
+    border-radius: 8px;
+    margin: 1.5em auto;
+    display: block;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
 }

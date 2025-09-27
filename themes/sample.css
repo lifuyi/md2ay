@@ -15,6 +15,7 @@ body {
     margin: 0 auto;
     width: 100%;
     box-shadow: rgba(0, 0, 0, 0.06) 0px 12px 35px;
+  max-width: 677px;
 }
 
 .section-card{
@@ -29,7 +30,6 @@ body {
   --ig-shadow: rgba(102, 126, 234, 0.2);
   --ig-glow: rgba(240, 147, 251, 0.4);
   background: linear-gradient(90deg, rgba(50, 0, 0, 0.03) 0%, rgba(255, 255, 255, 0) 11.49%) 0% 0% / 20px 20px repeat scroll padding-box border-box, linear-gradient(360deg, rgba(50, 0, 0, 0.04) 0%, rgba(255, 255, 255, 0) 12.16%) 0% 0% / 20px 20px repeat rgba(0, 0, 0, 0);
-
 
 }
 
@@ -163,7 +163,7 @@ section[style*="text-align: center"] {
 
 /* 响应式设计 */
 @media (max-width: 768px) {
-    .container {
+    .section-card {
         padding: 15px;
         border-radius: 16px;
     }
@@ -188,4 +188,12 @@ section[style*="text-align: center"] {
     p, li {
         font-size: 14px;
     }
+}
+/* Rich media image styles */
+.rich_pages.wxw-img {
+    max-width: 100%;
+    border-radius: 8px;
+    margin: 1.5em auto;
+    display: block;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
 }

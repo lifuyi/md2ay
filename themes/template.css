@@ -1,0 +1,277 @@
+/* CSS Theme Template - 新主题基础模板 */
+/* 复制此文件并修改样式来创建新主题 */
+/* 注意: 不要修改类名结构，只修改样式属性 */
+
+/* Body styles */
+body {
+  margin: 0;
+  background-color: #f9f9f9; /* 修改背景色 */
+  font-family: 'SF Pro Display', 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; /* 可选择字体 */
+}
+
+.markdown-body {
+  margin: 0 auto;
+  max-width: 677px; /* 固定宽度，不要修改 */
+  background-color: #ffffff; /* 修改主容器背景 */
+  border-radius: 8px; /* 可调整圆角 */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* 可调整阴影 */
+  padding: 12px; /* 可调整内边距 */
+}
+
+/* Main container */
+.section-card {
+  max-width: 677px; /* 固定宽度，不要修改 */
+  margin: 0 auto;
+  padding: 16px; /* 可调整内边距 */
+  background: #ffffff; /* 修改背景 */
+  font-family: 'SF Pro Display', 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif; /* 可选择字体 */
+  color: #1d1d1f; /* 修改文字颜色 */
+  line-height: 1.7; /* 可调整行高 */
+  font-size: 15px; /* 可调整字体大小 */
+  border-radius: 12px; /* 可调整圆角 */
+  position: relative;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08); /* 可调整阴影 */
+}
+
+/* Main heading (h1) */
+h1 {
+  padding: 0.8em 1.5em; /* 可调整内边距 */
+  font-size: 22px; /* 可调整字体大小 */
+  font-weight: 700; /* 可调整字体粗细 */
+  text-align: center; /* 可调整对齐方式 */
+  letter-spacing: 0.1em; /* 可调整字间距 */
+  line-height: 1.2; /* 可调整行高 */
+  background: #333333; /* 修改背景色 */
+  color: #ffffff; /* 修改文字颜色 */
+  border-radius: 16px; /* 可调整圆角 */
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25); /* 可调整阴影 */
+  backdrop-filter: blur(10px); /* 可调整模糊效果 */
+  position: relative;
+  overflow: hidden;
+}
+
+/* Secondary headings (h2) */
+h2 {
+  margin: 5px 8px 5px 0px; /* 可调整外边距 */
+  padding: 0.5em 0.5em 0.5em 15px; /* 可调整内边距 */
+  position: relative;
+  border-bottom: 1px dashed #cccccc; /* 可调整边框 */
+  font-size: 20px; /* 可调整字体大小 */
+  font-weight: 600; /* 可调整字体粗细 */
+  line-height: 1.2; /* 可调整行高 */
+  color: #1d1d1f; /* 修改文字颜色 */
+  background: #f8f8f8; /* 修改背景色 */
+  border-radius: 4px; /* 可调整圆角 */
+}
+
+/* Tertiary headings (h3) */
+h3 {
+  margin: 2em 8px 0.75em 0px; /* 可调整外边距 */
+  padding: 0.4em 0.4em 0.4em 13px; /* 可调整内边距 */
+  position: relative;
+  border-bottom: 1px dashed #cccccc; /* 可调整边框 */
+  font-size: 18px; /* 可调整字体大小 */
+  font-weight: 600; /* 可调整字体粗细 */
+  line-height: 1.2; /* 可调整行高 */
+  color: #1d1d1f; /* 修改文字颜色 */
+  background: #f5f5f5; /* 修改背景色 */
+  border-radius: 3px; /* 可调整圆角 */
+}
+
+/* Quaternary headings (h4) */
+h4 {
+  margin: 1.5em 8px 0.5em 0px; /* 可调整外边距 */
+  padding: 0.3em 0.3em 0.3em 11px; /* 可调整内边距 */
+  position: relative;
+  font-size: 16px; /* 可调整字体大小 */
+  font-weight: 600; /* 可调整字体粗细 */
+  line-height: 1.2; /* 可调整行高 */
+  color: #1d1d1f; /* 修改文字颜色 */
+  background: #f0f0f0; /* 修改背景色 */
+  border-radius: 2px; /* 可调整圆角 */
+}
+
+/* Paragraphs */
+p {
+  margin-top: 10px; /* 可调整外边距 */
+  padding-left: 10px; /* 可调整内边距 */
+  letter-spacing: 0.1em; /* 可调整字间距 */
+  color: #333333; /* 修改文字颜色 */
+  text-align: justify; /* 可调整对齐方式 */
+  line-height: 1.8; /* 可调整行高 */
+  font-size: 15px; /* 可调整字体大小 */
+}
+
+/* Unordered lists */
+ul {
+  list-style: none; /* 可调整列表样式 */
+  padding: 0; /* 可调整内边距 */
+  margin: 1.2em 0; /* 可调整外边距 */
+  color: #333333; /* 修改文字颜色 */
+  font-size: 15px; /* 可调整字体大小 */
+}
+
+ul li {
+  margin: 0.4em 0; /* 可调整外边距 */
+  padding: 0; /* 可调整内边距 */
+  line-height: 1.7; /* 可调整行高 */
+  font-size: 15px; /* 可调整字体大小 */
+}
+
+/* Ordered lists */
+ol {
+  list-style: none; /* 可调整列表样式 */
+  padding: 0; /* 可调整内边距 */
+  margin: 1.2em 0; /* 可调整外边距 */
+  color: #333333; /* 修改文字颜色 */
+  font-size: 15px; /* 可调整字体大小 */
+}
+
+ol li {
+  margin: 0.4em 0; /* 可调整外边距 */
+  padding: 0; /* 可调整内边距 */
+  line-height: 1.7; /* 可调整行高 */
+  font-size: 15px; /* 可调整字体大小 */
+}
+
+/* Strong text */
+strong {
+  font-weight: 600; /* 可调整字体粗细 */
+  color: #000000; /* 修改文字颜色 */
+}
+
+/* Emphasized text */
+em {
+  font-style: italic; /* 可调整字体样式 */
+  color: #666666; /* 修改文字颜色 */
+}
+
+/* Links */
+a {
+  color: #0066cc; /* 修改链接颜色 */
+  text-decoration: none; /* 可调整装饰 */
+  border-bottom: 1px solid transparent; /* 可调整边框 */
+  transition: all 0.3s ease; /* 可调整过渡效果 */
+}
+
+/* Code blocks */
+pre {
+  font-size: 14px; /* 可调整字体大小 */
+  overflow-x: auto; /* 保持水平滚动 */
+  border-radius: 8px; /* 可调整圆角 */
+  padding: 1.2em; /* 可调整内边距 */
+  line-height: 1.5; /* 可调整行高 */
+  margin: 1.5em 0; /* 可调整外边距 */
+  background: #f5f5f5; /* 修改背景色 */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* 可调整阴影 */
+}
+
+pre code {
+  background: none; /* 保持透明背景 */
+  padding: 0; /* 保持无内边距 */
+  font-family: 'SFMono-Regular', Consolas, Menlo, monospace; /* 可选择等宽字体 */
+  font-size: 14px; /* 可调整字体大小 */
+  color: #1d1d1f; /* 修改文字颜色 */
+  line-height: 1.5; /* 可调整行高 */
+}
+
+/* Inline code */
+code {
+  font-size: 90%; /* 可调整字体大小 */
+  color: #666666; /* 修改文字颜色 */
+  background: rgba(0, 0, 0, 0.1); /* 修改背景色 */
+  padding: 3px 6px; /* 可调整内边距 */
+  border-radius: 4px; /* 可调整圆角 */
+  font-family: 'SFMono-Regular', Consolas, Menlo, monospace; /* 可选择等宽字体 */
+}
+
+/* Figures */
+figure {
+  margin: 1.5em 0; /* 可调整外边距 */
+  text-align: center; /* 可调整对齐方式 */
+  line-height: 1.6; /* 可调整行高 */
+  font-size: 15px; /* 可调整字体大小 */
+  color: #555555; /* 修改文字颜色 */
+}
+
+figure img {
+  max-width: 100%; /* 保持响应式 */
+  border-radius: 8px; /* 可调整圆角 */
+  margin: 1.5em auto; /* 可调整外边距 */
+  display: block; /* 保持块级显示 */
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12); /* 可调整阴影 */
+}
+
+figcaption {
+  text-align: center; /* 可调整对齐方式 */
+  font-size: 0.9em; /* 可调整字体大小 */
+  color: #888888; /* 修改文字颜色 */
+  margin-top: 0.8em; /* 可调整外边距 */
+}
+
+figcaption span {
+  visibility: visible; /* 保持可见性 */
+}
+
+/* Blockquotes */
+blockquote {
+  font-style: normal; /* 可调整字体样式 */
+  padding: 1em 1.2em; /* 可调整内边距 */
+  border-left: 4px solid #cccccc; /* 可调整左边框 */
+  color: #333333; /* 修改文字颜色 */
+  background: #f8f8f8; /* 修改背景色 */
+  border-radius: 8px; /* 可调整圆角 */
+  margin-top: 5px; /* 可调整外边距 */
+}
+
+/* Horizontal rules */
+hr {
+  height: 2px; /* 可调整高度 */
+  border: none; /* 保持无边框 */
+  margin: 2.5em 0; /* 可调整外边距 */
+  background: #dddddd; /* 修改背景色 */
+}
+
+/* Tables */
+table {
+  width: 100%; /* 保持全宽 */
+  border-collapse: collapse; /* 保持边框合并 */
+  margin: 1.5em 0; /* 可调整外边距 */
+  border-radius: 8px; /* 可调整圆角 */
+  overflow: hidden; /* 保持溢出隐藏 */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* 可调整阴影 */
+}
+
+table thead th {
+  padding: 12px 15px; /* 可调整内边距 */
+  text-align: left; /* 可调整对齐方式 */
+  font-weight: 600; /* 可调整字体粗细 */
+  color: #1d1d1f; /* 修改文字颜色 */
+  border-bottom: 1.5px solid rgba(0, 0, 0, 0.1); /* 可调整边框 */
+  background: #f8f8f8; /* 修改背景色 */
+}
+
+table tbody td {
+  padding: 10px 15px; /* 可调整内边距 */
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05); /* 可调整边框 */
+  color: #333333; /* 修改文字颜色 */
+}
+
+/* Syntax highlighting for code blocks (可选) */
+.hljs {
+  background: none; /* 保持透明背景 */
+  padding: 0; /* 保持无内边距 */
+  font-family: 'SFMono-Regular', Consolas, Menlo, monospace; /* 可选择等宽字体 */
+  font-size: 14px; /* 可调整字体大小 */
+  color: #1d1d1f; /* 修改文字颜色 */
+  line-height: 1.5; /* 可调整行高 */
+}
+
+/* Rich media image styles */
+.rich_pages.wxw-img {
+  max-width: 100%; /* 保持响应式，不要修改 */
+  border-radius: 8px; /* 可调整圆角 */
+  margin: 1.5em auto; /* 可调整外边距 */
+  display: block; /* 保持块级显示，不要修改 */
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12); /* 可调整阴影 */
+}
