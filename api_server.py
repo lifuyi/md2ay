@@ -7,10 +7,44 @@ import json
 import logging
 import time
 from css_inline import inline
+import cssutils
+import re
 
 # 配置日志
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+def resolve_css_variables(css_content):
+    """
+    解析CSS中的变量并将其替换为实际值
+    """
+    # 解析CSS
+    sheet = cssutils.parseString(css_content)
+    
+    # 提取:root中的变量定义
+    variables = {}
+    for rule in sheet:
+        if rule.type == rule.STYLE_RULE and rule.selectorText == ':root':
+            for prop in rule.style:
+                if prop.name.startswith('--'):
+                    # 移除引号和空格
+                    value = prop.value.strip().strip('"\'')
+                    variables[prop.name] = value
+            break
+    
+    # 替换CSS中的变量引用
+    resolved_css = css_content
+    
+    # 替换变量引用为实际值
+    for var_name, var_value in variables.items():
+        # 使用正则表达式替换var()函数引用
+        pattern = r'var\(' + re.escape(var_name) + r'(,[^)]*)?\)'
+        resolved_css = re.sub(pattern, var_value, resolved_css)
+    
+    # 移除:root规则，因为我们已经解析了所有变量
+    resolved_css = re.sub(r':root\s*{[^}]*}', '', resolved_css, flags=re.DOTALL)
+    
+    return resolved_css
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -122,6 +156,8 @@ def render_markdown():
         if '..' not in style_name and style_name.endswith('.css'):
             with open(f'./themes/{style_name}', 'r', encoding='utf-8') as f:
                 custom_css = f.read()
+                # 解析CSS变量
+                custom_css = resolve_css_variables(custom_css)
     except FileNotFoundError:
         # Handle case where style file doesn't exist
         pass
@@ -146,11 +182,27 @@ def render_markdown():
         # 执行CSS内联
         inlined_html = inline(full_html)
         
-        # 提取body中的内容并用<section>标签包裹
+        # 提取body中的内容，保持markdown-body容器，并用<section>标签包裹
         from bs4 import BeautifulSoup
         soup = BeautifulSoup(inlined_html, 'html.parser')
-        body_content = soup.body.decode_contents()
-        wrapped_content = f'<section>{body_content}</section>'
+        
+        # 获取markdown-body容器的背景色样式
+        markdown_body = soup.find(class_='markdown-body')
+        container_bg_style = ""
+        if markdown_body and markdown_body.get('style'):
+            # 提取背景相关的样式
+            style_attr = markdown_body.get('style')
+            bg_styles = []
+            for style_part in style_attr.split(';'):
+                style_part = style_part.strip()
+                if style_part.startswith(('background', 'padding', 'border-radius', 'box-shadow')):
+                    bg_styles.append(style_part)
+            if bg_styles:
+                container_bg_style = f' style="{"; ".join(bg_styles)}"'
+        
+        # 获取body标签的内部内容（不包括body标签本身）
+        body_content = ''.join([str(child) for child in soup.body.children])
+        wrapped_content = f'<section{container_bg_style}>{body_content}</section>'
         
         return wrapped_content, 200, {'Content-Type': 'text/html'}
     else:
@@ -303,6 +355,7 @@ def send_markdown_to_wechat_draft():
                 else:
                     html_sections.append(f'<div class="section-card">{section_html}</div>')
             
+            # 合并所有section的HTML内容
             html_content = ''.join(html_sections)
             logger.info(f"Generated HTML with {len(html_sections)} sections")
         else:
@@ -335,11 +388,21 @@ def send_markdown_to_wechat_draft():
             if '..' not in style and style.endswith('.css'):
                 with open(f'./themes/{style}', 'r', encoding='utf-8') as f:
                     custom_css = f.read()
+                    # 解析CSS变量
+                    custom_css = resolve_css_variables(custom_css)
         except FileNotFoundError:
             pass
         
         # 创建完整的HTML文档用于CSS内联
         if custom_css:
+            # 如果使用dash separator，我们需要为所有section应用样式
+            if dash_separator:
+                # 为每个section添加正确的类名，然后整体包裹在markdown-body中
+                wrapped_html_content = f'<div class="markdown-body">{html_content}</div>'
+            else:
+                # 正常模式直接使用
+                wrapped_html_content = f'<div class="markdown-body">{html_content}</div>'
+                
             full_html = f'''
 <!DOCTYPE html>
 <html>
@@ -349,20 +412,34 @@ def send_markdown_to_wechat_draft():
 </style>
 </head>
 <body>
-<div class="markdown-body">
-{html_content}
-</div>
+{wrapped_html_content}
 </body>
 </html>'''
             
             # 执行CSS内联
             inlined_html = inline(full_html)
             
-            # 提取body中的内容并用<section>标签包裹
+            # 提取body中的内容并用<section>标签包裹，同时保持markdown-body容器
             from bs4 import BeautifulSoup
             soup = BeautifulSoup(inlined_html, 'html.parser')
-            body_content = soup.body.decode_contents()
-            wrapped_content = f'<section>{body_content}</section>'
+            
+            # 获取markdown-body容器的背景色样式
+            markdown_body = soup.find(class_='markdown-body')
+            container_bg_style = ""
+            if markdown_body and markdown_body.get('style'):
+                # 提取背景相关的样式
+                style_attr = markdown_body.get('style')
+                bg_styles = []
+                for style_part in style_attr.split(';'):
+                    style_part = style_part.strip()
+                    if style_part.startswith(('background', 'padding', 'border-radius', 'box-shadow')):
+                        bg_styles.append(style_part)
+                if bg_styles:
+                    container_bg_style = f' style="{"; ".join(bg_styles)}"'
+            
+            # 获取body标签的内部内容（不包括body标签本身）
+            body_content = ''.join([str(child) for child in soup.body.children])
+            wrapped_content = f'<section{container_bg_style}>{body_content}</section>'
         else:
             # 如果没有CSS，直接用<section>标签包裹内容
             wrapped_content = f'<section><div class="markdown-body">{html_content}</div></section>'
