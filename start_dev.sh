@@ -38,4 +38,13 @@ echo "🌐 Server will be available at: http://localhost:5002"
 echo "📁 Auto-reload: Python files will trigger server restart"
 echo "🐛 Debug mode: Enhanced error messages enabled"
 echo ""
-uv run python api_server.py --dev
+
+# Run the server in the background and redirect output to logs
+uv run python api_server.py --dev > server.log 2>&1 &
+
+# Store the process ID
+echo $! > server.pid
+
+echo "✅ Server started in background with PID $(cat server.pid)"
+echo "📄 Server logs are being written to server.log"
+echo "🛑 To stop the server, run: kill $(cat server.pid)"

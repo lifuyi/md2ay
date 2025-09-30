@@ -764,8 +764,29 @@ $x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a}$
                     const body = iframeDoc.body;
                     
                     if (body) {
-                        // 直接获取body的innerHTML，这已经包含了后端处理好的section标签和样式
-                        const htmlContent = body.innerHTML;
+                        // 处理iframe中的内容，移除多余的嵌套结构
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = body.innerHTML;
+                        
+                        // 处理嵌套的section标签 - 如果内容包含section-card div元素，
+                        // 则提取其中的内容而不是整个嵌套结构
+                        const sectionCards = tempDiv.querySelectorAll('div.section-card');
+                        if (sectionCards.length > 0) {
+                            // 如果有section-card，提取其中的内容并重新组织
+                            let combinedContent = '';
+                            sectionCards.forEach((card, index) => {
+                                // 提取card中的内容
+                                combinedContent += card.innerHTML;
+                                // 如果不是最后一个card，添加分隔线
+                                if (index < sectionCards.length - 1) {
+                                    combinedContent += '<hr style="margin: 20px 0; border: 1px solid #eee;">';
+                                }
+                            });
+                            tempDiv.innerHTML = combinedContent;
+                        }
+                        
+                        // 获取处理后的内容
+                        const htmlContent = tempDiv.innerHTML;
                         
                         // 复制HTML到剪贴板
                         copyHTMLToClipboard(htmlContent);
@@ -818,14 +839,41 @@ $x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a}$
             const scripts = tempDiv.querySelectorAll('script');
             scripts.forEach(script => script.remove());
             
+            // 处理嵌套的section标签 - 如果内容包含section-card div元素，
+            // 则提取其中的内容而不是整个嵌套结构
+            const sectionCards = tempDiv.querySelectorAll('div.section-card');
+            if (sectionCards.length > 0) {
+                // 如果有section-card，提取其中的内容并重新组织
+                let combinedContent = '';
+                sectionCards.forEach((card, index) => {
+                    // 提取card中的内容
+                    combinedContent += card.innerHTML;
+                    // 如果不是最后一个card，添加分隔线
+                    if (index < sectionCards.length - 1) {
+                        combinedContent += '<hr style="margin: 20px 0; border: 1px solid #eee;">';
+                    }
+                });
+                tempDiv.innerHTML = combinedContent;
+            }
+            
             // 获取清理后的HTML内容
             const cleanHTML = tempDiv.innerHTML;
             
-            // 使用Clipboard API复制HTML内容
+            // 同时准备纯文本版本
+            const plainText = tempDiv.textContent || tempDiv.innerText || '';
+            
+            // 使用Clipboard API复制HTML内容（支持富文本格式）
             if (navigator.clipboard && window.ClipboardItem) {
-                // 现代浏览器支持Clipboard API
-                const blob = new Blob([cleanHTML], { type: 'text/html' });
-                const data = [new ClipboardItem({ 'text/html': blob })];
+                // 现代浏览器支持Clipboard API，同时复制HTML和纯文本格式
+                const htmlBlob = new Blob([cleanHTML], { type: 'text/html' });
+                const textBlob = new Blob([plainText], { type: 'text/plain' });
+                
+                const data = [
+                    new ClipboardItem({
+                        'text/html': htmlBlob,
+                        'text/plain': textBlob
+                    })
+                ];
                 
                 navigator.clipboard.write(data)
                     .then(() => {
@@ -836,46 +884,98 @@ $x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a}$
                     .catch(err => {
                         console.error('Clipboard API 失败:', err);
                         // 降级到传统方法
-                        fallbackCopyTextToClipboard(cleanHTML);
+                        fallbackCopyTextToClipboard(cleanHTML, plainText);
                     });
             } else {
                 // 降级到传统方法
-                fallbackCopyTextToClipboard(cleanHTML);
+                fallbackCopyTextToClipboard(cleanHTML, plainText);
             }
         }
 
-        // 降级复制方法
-        function fallbackCopyTextToClipboard(text) {
-            const textArea = document.createElement('textarea');
-            textArea.value = text;
-            
-            // 避免滚动到底部
-            textArea.style.top = '0';
-            textArea.style.left = '0';
-            textArea.style.position = 'fixed';
-            textArea.style.opacity = '0';
-            
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-            
+        // 降级复制方法 - 改进版本，支持Linux/Debian系统
+        function fallbackCopyTextToClipboard(html, text) {
+            // 首先尝试使用更直接的方法来复制HTML内容
             try {
-                const successful = document.execCommand('copy');
+                // 创建一个临时的div元素来保存HTML内容
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = html;
+                tempDiv.style.position = 'fixed';
+                tempDiv.style.left = '-9999px';
+                tempDiv.style.top = '-9999px';
+                tempDiv.style.opacity = '0';
+                tempDiv.style.zIndex = '-1';
+                document.body.appendChild(tempDiv);
+                
+                // 选择并复制内容
+                const range = document.createRange();
+                range.selectNodeContents(tempDiv);
+                const selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(range);
+                
+                // 尝试复制
+                let successful = false;
+                if (document.queryCommandSupported && document.queryCommandSupported('copy')) {
+                    successful = document.execCommand('copy');
+                }
+                
+                // 清理选择和元素
+                selection.removeAllRanges();
+                document.body.removeChild(tempDiv);
+                
                 if (successful) {
                     hideLoading();
                     updateStatus('已复制到剪贴板');
                     alert('已复制到剪贴板');
+                    return;
                 } else {
-                    throw new Error('复制命令失败');
+                    // 如果复制HTML失败，尝试复制纯文本
+                    throw new Error('HTML复制命令失败');
                 }
             } catch (err) {
-                console.error('复制失败:', err);
-                alert('复制失败: ' + err.message);
-                hideLoading();
-                updateStatus('复制失败', true);
+                console.error('HTML复制失败:', err);
+                
+                // 如果HTML复制失败，尝试复制纯文本
+                try {
+                    // 创建一个临时的textarea用于复制纯文本内容
+                    const textArea = document.createElement('textarea');
+                    // 使用纯文本内容
+                    textArea.value = text || '';
+                    
+                    // 避免滚动到底部
+                    textArea.style.position = 'fixed';
+                    textArea.style.left = '-9999px';
+                    textArea.style.top = '-9999px';
+                    textArea.style.opacity = '0';
+                    textArea.style.zIndex = '-1';
+                    
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+                    
+                    // 尝试复制
+                    let successful = false;
+                    if (document.queryCommandSupported && document.queryCommandSupported('copy')) {
+                        successful = document.execCommand('copy');
+                    }
+                    
+                    // 清理
+                    document.body.removeChild(textArea);
+                    
+                    if (successful) {
+                        hideLoading();
+                        updateStatus('已复制到剪贴板（纯文本）');
+                        alert('已复制到剪贴板（纯文本）');
+                    } else {
+                        throw new Error('纯文本复制命令失败');
+                    }
+                } catch (err2) {
+                    console.error('纯文本复制也失败:', err2);
+                    alert('复制失败: ' + err2.message + '\n\n请尝试手动选择内容后使用 Ctrl+C 复制');
+                    hideLoading();
+                    updateStatus('复制失败', true);
+                }
             }
-            
-            document.body.removeChild(textArea);
         }
 
         // 事件监听

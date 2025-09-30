@@ -1,45 +1,17 @@
 /* 复古打字机 Theme */
 /* Theme ID: typewriter */
 
-:root {
-  --bg-color: #f8f3e3;
-  --content-bg: #f8f3e3;
-  --text-color: #4a4a4a;
-  --h1-bg: #8b4513;
-  --h1-color: #ffffff;
-  --h2-color: #4a4a4a;
-  --h2-bg: #f8f3e320;
-  --h3-color: #4a4a4a;
-  --h3-bg: #f8f3e320;
-  --h4-color: #4a4a4a;
-  --h4-bg: #f8f3e320;
-  --strong-color: #8b4513;
-  --em-color: #8b4513;
-  --link-color: #8b4513;
-  --code-bg: #f8f3e320;
-  --code-color: #4a4a4a;
-  --inline-code-bg: rgba(0,0,0,0.1);
-  --quote-color: #4a4a4a;
-  --quote-bg: #f8f3e320;
-  --quote-border: #8b4513;
-  --table-header-color: #4a4a4a;
-  --table-header-bg: #f8f3e320;
-  --table-text-color: #4a4a4a;
-  --table-border: #8b4513;
-  --hr-color: #f8f3e320;
-}
-
 /* Body and container styles */
 body {
   margin: 0;
-  background-color: var(--bg-color);
+  background-color: #f8f3e3;
   font-family: 'SF Pro Display', 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
 }
 
 .markdown-body {
   margin: 0 auto;
   max-width: 677px;
-  background-color: var(--content-bg);
+  background-color: #f8f3e3;
   border-radius: 8px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   padding: 12px;
@@ -49,9 +21,9 @@ body {
   max-width: 677px;
   margin: 0 auto;
   padding: 16px;
-  background: var(--content-bg);
+  background: #f8f3e3;
   font-family: 'SF Pro Display', 'Helvetica Neue', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-  color: var(--text-color);
+  color: #4a4a4a;
   line-height: 1.7;
   font-size: 15px;
   border-radius: 12px;
@@ -67,8 +39,8 @@ h1 {
   text-align: center;
   letter-spacing: 0.1em;
   line-height: 1.2;
-  background: var(--h1-bg);
-  color: var(--h1-color);
+  background: #8b4513;
+  color: #ffffff;
   border-radius: 16px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
   backdrop-filter: blur(10px);
@@ -80,12 +52,12 @@ h2 {
   margin: 5px 8px 5px 0px;
   padding: 0.5em 0.5em 0.5em 15px;
   position: relative;
-  border-bottom: 1px dashed var(--quote-border);
+  border-bottom: 1px dashed #8b4513;
   font-size: 20px;
   font-weight: 600;
   line-height: 1.2;
-  color: var(--h2-color);
-  background: var(--h2-bg);
+  color: #4a4a4a;
+  background: #f8f3e320;
   border-radius: 4px;
 }
 
@@ -93,12 +65,12 @@ h3 {
   margin: 2em 8px 0.75em 0px;
   padding: 0.4em 0.4em 0.4em 13px;
   position: relative;
-  border-bottom: 1px dashed var(--quote-border);
+  border-bottom: 1px dashed #8b4513;
   font-size: 18px;
   font-weight: 600;
   line-height: 1.2;
-  color: var(--h3-color);
-  background: var(--h3-bg);
+  color: #4a4a4a;
+  background: #f8f3e320;
   border-radius: 3px;
 }
 
@@ -109,8 +81,8 @@ h4 {
   font-size: 16px;
   font-weight: 600;
   line-height: 1.2;
-  color: var(--h4-color);
-  background: var(--h4-bg);
+  color: #4a4a4a;
+  background: #f8f3e320;
   border-radius: 2px;
 }
 
@@ -119,7 +91,7 @@ p {
   margin-top: 10px;
   padding-left: 10px;
   letter-spacing: 0.1em;
-  color: var(--text-color);
+  color: #4a4a4a;
   text-align: justify;
   line-height: 1.8;
   font-size: 15px;
@@ -127,23 +99,23 @@ p {
 
 strong {
   font-weight: 600;
-  color: var(--strong-color);
+  color: #8b4513;
 }
 
 em {
   font-style: italic;
-  color: var(--em-color);
+  color: #8b4513;
 }
 
 a {
-  color: var(--link-color);
+  color: #8b4513;
   text-decoration: none;
   border-bottom: 1px solid transparent;
   transition: all 0.3s ease;
 }
 
 a:hover {
-  border-bottom-color: var(--link-color);
+  border-bottom-color: #8b4513;
 }
 
 /* Lists */
@@ -151,7 +123,7 @@ ul, ol {
   list-style: none;
   padding: 0;
   margin: 1.2em 0;
-  color: var(--text-color);
+  color: #4a4a4a;
   font-size: 15px;
 }
 
@@ -170,7 +142,7 @@ pre {
   padding: 1.2em;
   line-height: 1.5;
   margin: 1.5em 0;
-  background: var(--code-bg);
+  background: #f8f3e320;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
@@ -179,14 +151,14 @@ pre code {
   padding: 0;
   font-family: 'SFMono-Regular', Consolas, Menlo, monospace;
   font-size: 14px;
-  color: var(--code-color);
+  color: #4a4a4a;
   line-height: 1.5;
 }
 
 code {
   font-size: 90%;
-  color: var(--code-color);
-  background: var(--inline-code-bg);
+  color: #4a4a4a;
+  background: rgba(0,0,0,0.1);
   padding: 3px 6px;
   border-radius: 4px;
   font-family: 'SFMono-Regular', Consolas, Menlo, monospace;
@@ -196,9 +168,9 @@ code {
 blockquote {
   font-style: normal;
   padding: 1em 1.2em;
-  border-left: 4px solid var(--quote-border);
-  color: var(--quote-color);
-  background: var(--quote-bg);
+  border-left: 4px solid #8b4513;
+  color: #4a4a4a;
+  background: #f8f3e320;
   border-radius: 8px;
   margin-top: 5px;
 }
@@ -217,15 +189,15 @@ table thead th {
   padding: 12px 15px;
   text-align: left;
   font-weight: 600;
-  color: var(--table-header-color);
-  border-bottom: 1.5px solid var(--table-border);
-  background: var(--table-header-bg);
+  color: #4a4a4a;
+  border-bottom: 1.5px solid #8b4513;
+  background: #f8f3e320;
 }
 
 table tbody td {
   padding: 10px 15px;
-  border-bottom: 1px solid var(--table-border);
-  color: var(--table-text-color);
+  border-bottom: 1px solid #8b4513;
+  color: #4a4a4a;
 }
 
 /* Horizontal rule */
@@ -233,7 +205,7 @@ hr {
   height: 2px;
   border: none;
   margin: 2.5em 0;
-  background: var(--hr-color);
+  background: #f8f3e320;
 }
 
 /* Images */
@@ -251,12 +223,12 @@ figure {
   text-align: center;
   line-height: 1.6;
   font-size: 15px;
-  color: var(--text-color);
+  color: #4a4a4a;
 }
 
 figcaption {
   text-align: center;
   font-size: 0.9em;
-  color: var(--em-color);
+  color: #8b4513;
   margin-top: 0.8em;
 }

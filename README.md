@@ -147,18 +147,26 @@ The project includes convenient startup scripts for different environments:
 
 | Script | Mode | Features | Use Case |
 |--------|------|----------|----------|
-| `./start_dev.sh` | Development | Auto-reload, debug mode | Development & testing |
+| `./start_dev.sh` | Development | Auto-reload, debug mode, background execution | Development & testing |
 | `./start_prod.sh` | Production | Optimized, no debug | Production deployment |
+| `./stop_dev.sh` | Utility | Stops the background development server | Development |
 
 #### Development Mode Features:
 - 🔥 **Auto-reload**: Server restarts automatically on file changes
 - 🐛 **Debug mode**: Enhanced error messages and debugging
 - 📁 **File watching**: Static files served with latest changes
+- 🚀 **Background execution**: Server runs in background with logs
 
 #### Production Mode Features:
 - 🚀 **Optimized**: `PYTHONOPTIMIZE=1` for better performance
 - 🔒 **Secure**: Debug mode disabled
 - 🛡️ **Stable**: No file watching overhead
+
+#### Background Execution:
+- 🔄 **Non-blocking**: `./start_dev.sh &` now works properly
+- 📄 **Logging**: Server output redirected to `server.log`
+- 🛑 **Process control**: Stop server with `./stop_dev.sh`
+- 🆔 **PID tracking**: Process ID stored in `server.pid`
 
 ### UV Performance Benefits
 

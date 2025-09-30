@@ -1,89 +1,65 @@
-/* Card CSS extracted from card.html */
+/* Card CSS extracted from card (4).html */
 /* Modified to map to standard class structure */
+body {
+    padding-top: 20px;
+    background: linear-gradient(
+    135deg,
+    #833ab4 0%,
+    #fd1d1d 50%,
+    #fcb045 100%
+  );
+}
 
-/* 主容器样式 - 映射到 .markdown-body */
-.markdown-body {
+.section-card {
+    background-color: rgba(255, 255, 255, 0.8);
+    color: #1a1a1a;
+    border-radius: 16px;
+    padding: 32px 32px 32px 32px;
+    backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     position: relative;
+    height: auto;
+}
+
+.markdown-body {
+    font-family: PingFang SC,
+    -apple-system,
+    BlinkMacSystemFont,
+    Hiragino Sans GB,
+    Segoe UI,
+    Microsoft YaHei,
+    Arial,
+    sans-serif;
     line-height: 1.75;
     color: #24292e;
     font-size: 16px;
     word-wrap: break-word;
-    font-family: 'PingFang SC', 'SF Pro Text', 'Microsoft YaHei', sans-serif;
-    background: white;
-    overflow: hidden;
+    padding: 10px;
+    position: relative;
     max-width: 677px;
     margin: 0 auto;
 }
 
-/* 内容区域样式 - 映射到 .section-card */
-.section-card {
-    height: auto;
-    padding: 20px;
-}
-
 /* 标题样式 */
 .markdown-body h1 {
-    font-size: 22px;
-    line-height: 1.4;
-    font-weight: 600;
-    color: #1c1f23;
-    margin-top: 0;
-    margin-bottom: 22px;
-    text-align: center;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    
 }
 
 .markdown-body h1 .suffix {
-    display: block;
-    margin-top: 10px;
-    width: 40px;
-    height: 4px;
-    background: linear-gradient(90deg, #0066ff, #fa2c19);
-    border-radius: 4px;
-    margin-left: auto;
-    margin-right: auto;
-    transform: translate(0px, 2px);
+    
 }
 
 .markdown-body h2 {
-    margin-top: 16px;
-    line-height: 1.25;
-    display: table;
-    padding: 0.4em 1.4em;
-    margin: 3em auto 1.5em;
-    color: #fff;
-    background: linear-gradient(135deg, #1677ff, #05d4cd);
-    font-size: 1.3em;
-    font-weight: 600;
-    text-align: center;
-    border-radius: 8px 24px 8px 24px;
-    letter-spacing: 0.02em;
+    
 }
 
 .markdown-body h3 {
-    margin-top: 16px;
-    padding: 0.5em 1em 0.5em 12px;
-    font-size: 1.2em;
-    border-radius: 6px;
-    line-height: 1.6;
-    border-left: 4px solid #1677ff;
-    border-right: 1px solid rgba(22, 119, 255, 0.1);
-    border-bottom: 1px solid rgba(22, 119, 255, 0.1);
-    border-top: 1px solid rgba(22, 119, 255, 0.1);
-    background: rgba(22, 119, 255, 0.05);
-    color: #1677ff;
-    margin: 2em 0 0.75em;
-    font-weight: 600;
+    
 }
 
 /* 段落样式 */
 .markdown-body p {
     margin-top: 16px;
-    font-size: 16px;
-    line-height: 2;
-    color: #1c1f23;
-    margin-bottom: 16px;
-    padding: 0 2px;
 }
 
 /* 列表样式 */
@@ -131,7 +107,7 @@
 .markdown-body blockquote {
     margin: 16px 0;
     padding: 0 16px;
-    border-left: 4px solid #1677ff;
+    border-left: 4px solid rgba(255, 255, 255, 0.3);
     color: #666;
 }
 
@@ -155,7 +131,7 @@
 
 /* 链接样式 */
 .markdown-body a {
-    color: #1677ff;
+    color: #833ab4;
     text-decoration: none;
 }
 
@@ -181,6 +157,7 @@
     .markdown-body {
         width: 95%;
         margin: 0 auto;
+        padding: 10px;
     }
     
     .section-card {
