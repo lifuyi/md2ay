@@ -1247,7 +1247,8 @@ $x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a}$
             })
             .then(data => {
                 hideLoading();
-                if (data.errcode === 0) {
+                // 成功的条件：没有errcode字段，或者errcode为0，或者有media_id字段
+                if (!data.errcode || data.errcode === 0 || data.media_id) {
                     updateStatus('已成功发送到微信草稿箱');
                     alert('已成功发送到微信草稿箱\n草稿ID: ' + data.media_id);
                 } else {
