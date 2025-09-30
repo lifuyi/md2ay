@@ -18,19 +18,19 @@ def resolve_css_variables(css_content):
     """
     解析CSS中的变量并将其替换为实际值
     """
-    # 解析CSS
-    sheet = cssutils.parseString(css_content)
-    
-    # 提取:root中的变量定义
+    # 提取所有CSS变量定义
     variables = {}
-    for rule in sheet:
-        if rule.type == rule.STYLE_RULE and rule.selectorText == ':root':
-            for prop in rule.style:
-                if prop.name.startswith('--'):
-                    # 移除引号和空格
-                    value = prop.value.strip().strip('"\'')
-                    variables[prop.name] = value
-            break
+    
+    # 匹配CSS变量定义的正则表达式
+    var_def_pattern = r'(--[\w-]+)\s*:\s*([^;]+);'
+    
+    # 查找所有变量定义
+    for match in re.finditer(var_def_pattern, css_content):
+        var_name = match.group(1)
+        var_value = match.group(2).strip()
+        # 移除可能的尾随逗号或空格
+        var_value = var_value.rstrip(', ')
+        variables[var_name] = var_value
     
     # 替换CSS中的变量引用
     resolved_css = css_content
@@ -38,11 +38,14 @@ def resolve_css_variables(css_content):
     # 替换变量引用为实际值
     for var_name, var_value in variables.items():
         # 使用正则表达式替换var()函数引用
-        pattern = r'var\(' + re.escape(var_name) + r'(,[^)]*)?\)'
+        # 匹配 var(--variable-name) 或 var(--variable-name, fallback)
+        # 更精确地处理可能的空格和换行
+        pattern = r'var\s*\(\s*' + re.escape(var_name) + r'\s*(?:,[^)]*)?\)'
         resolved_css = re.sub(pattern, var_value, resolved_css)
     
-    # 移除:root规则，因为我们已经解析了所有变量
-    resolved_css = re.sub(r':root\s*{[^}]*}', '', resolved_css, flags=re.DOTALL)
+    # 移除变量定义行，但保留其他CSS规则
+    # 使用更安全的方式移除变量定义
+    resolved_css = re.sub(r'--[\w-]+\s*:\s*[^;]+;\s*', '', resolved_css)
     
     return resolved_css
 

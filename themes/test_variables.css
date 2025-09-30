@@ -1,0 +1,51 @@
+:root {
+  --main-color: #3498db;
+  --bg-color: #f8f9fa;
+  --text-color: #333;
+  --border-color: #ddd;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  line-height: 1.6;
+}
+
+.markdown-body {
+  background-color: var(--bg-color);
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 677px;
+  margin: 0 auto;
+  border: 1px solid var(--border-color);
+}
+
+h1 {
+  color: var(--main-color);
+  padding: 0.5em;
+  margin: 1em 0;
+  font-size: 24px;
+  text-align: center;
+  border-bottom: 2px solid var(--main-color);
+}
+
+p {
+  margin: 1em 0;
+  line-height: 1.8;
+}
+
+code {
+  color: var(--main-color);
+  background-color: var(--bg-color);
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+
+blockquote {
+  border-left: 4px solid var(--main-color);
+  padding: 0 1em;
+  margin: 1em 0;
+  color: var(--text-color);
+  background-color: var(--bg-color);
+}
