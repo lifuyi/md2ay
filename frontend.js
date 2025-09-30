@@ -759,26 +759,46 @@ $x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a}$
                 const iframe = previewPane.querySelector('iframe');
                 
                 if (iframe && iframe.contentDocument) {
-                    // 获取iframe中的HTML内容
+                    // 获取iframe中的完整HTML内容
                     const iframeDoc = iframe.contentDocument;
-                    const content = iframeDoc.querySelector('.markdown-body') || iframeDoc.body;
+                    const body = iframeDoc.body;
                     
-                    if (content) {
-                        // 获取完整的HTML内容
-                        const htmlContent = content.innerHTML;
-                        
-                        // 创建临时div来处理HTML内容
-                        const tempDiv = document.createElement('div');
-                        tempDiv.innerHTML = htmlContent;
+                    if (body) {
+                        // 直接获取body的innerHTML，这已经包含了后端处理好的section标签和样式
+                        const htmlContent = body.innerHTML;
                         
                         // 复制HTML到剪贴板
-                        copyHTMLToClipboard(tempDiv.innerHTML);
+                        copyHTMLToClipboard(htmlContent);
                     } else {
                         throw new Error('无法获取内容');
                     }
                 } else {
                     // 如果没有iframe，直接复制预览区域的内容
-                    copyHTMLToClipboard(previewPane.innerHTML);
+                    // 通过API重新获取渲染后的内容以确保样式正确
+                    const markdown = editor.value.trim();
+                    const theme = themeSelector.value;
+                    
+                    if (!markdown) {
+                        throw new Error('没有内容可复制');
+                    }
+                    
+                    fetch(`${API_BASE_URL}/render`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            md: markdown,
+                            style: theme
+                        })
+                    })
+                    .then(response => response.text())
+                    .then(html => {
+                        copyHTMLToClipboard(html);
+                    })
+                    .catch(error => {
+                        throw error;
+                    });
                 }
             } catch (error) {
                 console.error('复制失败:', error);
@@ -1094,12 +1114,17 @@ $x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a}$
             console.log('Theme:', theme);
             console.log('ThumbMediaId:', thumbMediaId);
             
+            // 获取分隔线拆分复选框的状态
+            const splitCheckbox = document.getElementById('split-checkbox');
+            const dashSeparator = splitCheckbox && splitCheckbox.checked;
+            
             const requestData = {
                 appid: appId,
                 secret: appSecret,
                 markdown: markdown,
                 style: theme,
-                thumb_media_id: thumbMediaId
+                thumb_media_id: thumbMediaId,
+                dashseparator: dashSeparator
             };
             
             console.log('Request data:', JSON.stringify(requestData));
